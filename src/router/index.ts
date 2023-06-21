@@ -3,6 +3,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import MainPage from "../components/MainPage.vue";
 import StatisticPage from "../components/StatisticPage.vue";
 import ProductListPage from "../components/ProductListPage.vue";
+import SettingsPage from "../components/SettingsPage.vue"
 
 const routes = [
     {
@@ -19,6 +20,11 @@ const routes = [
         path: '/product-list',
         name: 'Product List',
         component: ProductListPage
+    },
+    {
+        path: '/settings',
+        name: 'Settings',
+        component: SettingsPage
     }
 ]
 
