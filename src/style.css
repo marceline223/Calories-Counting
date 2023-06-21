@@ -15,12 +15,16 @@
 }
 
 body {
-  max-width: 86%;
-  margin: auto;
+
 }
 
 .content {
+  max-width: 90%;
+  margin: auto;
+}
 
+.bi {
+  font-size: 1.5rem;
 }
 
 @media (prefers-color-scheme: light) {
