@@ -1,6 +1,8 @@
 <template>
   <div class="content">
-    <h4>Статистика</h4>
+    <h4>
+      Статистика
+    </h4>
   </div>
 </template>
 

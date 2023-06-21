@@ -1,7 +1,8 @@
 <template>
   <div class="content">
     <h4>Справочник</h4>
-    <table class="table table-bordered">
+    <div>ПОИСК</div>
+    <table class="table table-bordered table-sm">
       <thead>
       <tr>
         <th>Название</th>
@@ -14,7 +15,7 @@
       <tbody>
       <tr
           v-for="product in productsForPage"
-          :key=product.name
+          :key="product.name"
       >
         <td>{{ product.name }}</td>
         <td>{{ product.calories }}</td>
@@ -49,8 +50,9 @@
           >
             <a
                 class="page-link"
-                :class="pageNumberStyleClass( getPagesForNavigation().start + i  - 1)"
-                @click="currentPage = getPagesForNavigation().start + i  - 1">
+                :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
+                @click="currentPage = getPagesForNavigation().start + i - 1"
+            >
               {{ getPagesForNavigation().start + i }}
             </a>
           </li>
@@ -77,14 +79,11 @@ import {useProductsStore} from "../store/index.ts";
 
 export default {
   name: "ProductListPage",
-  beforeMount() {
-    useProductsStore().fetchProducts();
-  },
   data() {
     return {
       store: useProductsStore(),
       currentPage: 0,
-      sizeOfPage: 13
+      sizeOfPage: 15
     }
   },
   computed: {
@@ -100,6 +99,9 @@ export default {
 
       return this.products.slice(start, end);
     }
+  },
+  beforeMount() {
+    useProductsStore().fetchProducts();
   },
   methods: {
     nextPage() {
@@ -141,8 +143,6 @@ export default {
   font-weight: bold;
   background-color: #ececec;
 }
-
-
 
 .page-link, .page-link:hover {
   color: black;
