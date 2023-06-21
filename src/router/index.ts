@@ -1,0 +1,30 @@
+import {createRouter, createWebHistory} from 'vue-router'
+
+import MainPage from "../components/MainPage.vue";
+import StatisticPage from "../components/StatisticPage.vue";
+import ProductListPage from "../components/ProductListPage.vue";
+
+const routes = [
+    {
+        path: '/main',
+        name: 'Main',
+        component: MainPage
+    },
+    {
+        path: '/statistic',
+        name: 'Statistic',
+        component: StatisticPage
+    },
+    {
+        path: '/product-list',
+        name: 'Product List',
+        component: ProductListPage
+    }
+]
+
+const router = createRouter({
+    routes,
+    history: createWebHistory()
+})
+
+export default router
