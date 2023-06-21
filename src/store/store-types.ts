@@ -6,10 +6,19 @@ export interface Record {
 }
 
 export interface Meal {
-    products: Product[]
+    products: EatenProduct[]
 }
 
-export interface Product {
+export interface EatenProduct {
     id: number,
     count: number
+}
+
+export interface ProductInfo {
+    id: number,
+    name: string,
+    calories: string,
+    proteins: string,
+    fats: string,
+    carbs: string
 }
