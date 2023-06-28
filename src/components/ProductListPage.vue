@@ -1,8 +1,18 @@
 <template>
   <div class="content">
-    <h4>Справочник</h4>
-    <div>ПОИСК</div>
-    <table class="table table-bordered table-sm">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Справочник</h4>
+      <div class="input-group align-content-center">
+        <input
+            v-model="stringForSearch"
+            type="text"
+            placeholder="Поиск"
+            class="form-control"
+        >
+      </div>
+
+    </div>
+    <table class="table table-bordered">
       <thead>
       <tr>
         <th>Название</th>
@@ -26,51 +36,95 @@
       </tbody>
     </table>
 
-    <nav>
-      <ul class="pagination">
-        <!--переход на предыдущую страницу-->
-        <li class="page-item">
-          <a
-              class="page-link"
-              aria-label="Предыдущая"
-              @click="prevPage"
-          >
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-
-        <!-- отображаем (n-2) (n-1) n (n+1) (n+2) страницы-->
-        <!-- если текущая страница 1, 2, (n-1) или (n-2) - она не в центре-->
-
-        <div class="d-flex">
-          <li
-              v-for="i in 5"
-              :key="i"
-              class="page-item"
-          >
-            <a
+    <div class="d-flex">
+      <nav class="col">
+        <ul class="pagination">
+          <!--переход на предыдущую страницу-->
+          <li class="page-item">
+            <button
                 class="page-link"
-                :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
-                @click="currentPage = getPagesForNavigation().start + i - 1"
+                aria-label="Предыдущая"
+                @click="prevPage"
+                :disabled="currentPage < 1"
             >
-              {{ getPagesForNavigation().start + i }}
-            </a>
+              <span aria-hidden="true">&laquo;</span>
+            </button>
           </li>
-        </div>
 
+          <!-- отображаем (n-2) (n-1) n (n+1) (n+2) страницы-->
+          <!-- если текущая страница 1, 2, (n-1) или (n-2) - она не в центре-->
 
-        <!--переход на следующую страницу-->
-        <li class="page-item">
-          <a
-              class="page-link"
-              aria-label="Следующая"
-              @click="nextPage"
+          <div
+              v-if="pageCount >= 5"
+              class="d-flex"
           >
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+            <li
+                v-for="i in 5"
+                :key="i"
+                class="page-item"
+            >
+              <a
+                  class="page-link"
+                  :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
+                  @click="currentPage = getPagesForNavigation().start + i - 1"
+              >
+                {{ getPagesForNavigation().start + i }}
+              </a>
+            </li>
+          </div>
+
+          <div
+              v-else
+              class="d-flex"
+          >
+            <li
+                v-for="i in pageCount"
+                :key="i"
+                class="page-item"
+            >
+              <a
+                  class="page-link"
+                  :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
+                  @click="currentPage = getPagesForNavigation().start + i - 1"
+              >
+                {{ getPagesForNavigation().start + i }}
+              </a>
+            </li>
+          </div>
+
+
+          <!--переход на следующую страницу-->
+          <li class="page-item">
+            <button
+                class="page-link"
+                aria-label="Следующая"
+                :disabled="currentPage > pageCount - 2"
+                @click="nextPage"
+            >
+              <span aria-hidden="true">&raquo;</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="input-group">
+        <span class="input-group-text">
+          Страница
+        </span>
+        <input
+            v-model="chosenPageInput"
+            type="number"
+            class="form-control"
+            inputmode="numeric"
+        >
+        <button
+            class="btn btn-light btn-sm"
+            @click="goToChosenPage"
+        >
+          ✓
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,11 +137,18 @@ export default {
     return {
       store: useProductsStore(),
       currentPage: 0,
-      sizeOfPage: 15
+      sizeOfPage: 12,
+      chosenPageInput: 1,
+      stringForSearch: null
     }
   },
   computed: {
     products() {
+      //поиск по строке
+      console.log(this.stringForSearch);
+      if (this.stringForSearch && this.stringForSearch !== '') {
+        return this.store.products.filter(item => item.name.toLowerCase().includes(this.stringForSearch))
+      }
       return this.store.products;
     },
     pageCount() {
@@ -105,7 +166,7 @@ export default {
   },
   methods: {
     nextPage() {
-      if (this.currentPage < this.pageCount) {
+      if (this.currentPage < this.pageCount - 1) {
         this.currentPage++;
       }
     },
@@ -119,12 +180,21 @@ export default {
         return 'chosen-page'
       }
     },
+    goToChosenPage() {
+      if (this.chosenPageInput > 0 && this.chosenPageInput <= this.pageCount) {
+        this.currentPage = this.chosenPageInput - 1;
+      } else if (this.chosenPageInput <= 0) {
+        this.currentPage = 0;
+      } else {
+        this.currentPage = this.pageCount - 1;
+      }
+    },
     getPagesForNavigation() {
       if (this.currentPage < 2) {
         return {
           start: 0
         }
-      } else if (this.currentPage > this.pageCount - 2) {
+      } else if (this.currentPage > this.pageCount - 3) {
         return {
           start: this.pageCount - 5
         }
@@ -146,5 +216,18 @@ export default {
 
 .page-link, .page-link:hover {
   color: black;
+}
+
+.input-group {
+  width: 15em;
+  height: 1em;
+}
+
+.form-control {
+  width: 25em;
+}
+
+.btn-light {
+  border-color: #e1e1e1;
 }
 </style>
