@@ -1,11 +1,13 @@
 <template>
   <div class="content">
-    <div class="col-7 mx-auto d-flex">
+    <div class="col-8 mx-auto d-flex">
       <div class="input-group col">
         <input
-            v-model="chosenDate"
+            id="calendar"
+            :value="chosenDate"
             type="date"
             class="form-control"
+            @input="onInputChosenDate"
         >
       </div>
       <div class="col">
@@ -13,7 +15,7 @@
           Суточная норма калорий: {{ normOfCalories }} кКал
         </div>
         <div class="text-end">
-          Употреблено за день: {{ totalCalories }} кКал
+          Употреблено за день: {{ totalCalories.toFixed(2) }} кКал
         </div>
       </div>
     </div>
@@ -39,8 +41,7 @@
 </template>
 
 <script>
-import {useRecordsStore} from "../store/index.ts";
-import {useProductsStore} from "../store/index.ts";
+import {useRecordsStore, useProductsStore} from "../store/index.ts";
 import {mapState} from "pinia";
 import MealComponent from "./Meal.vue";
 
@@ -50,24 +51,26 @@ export default {
   data() {
     return {
       recordsStore: useRecordsStore(),
-      productsStore: useProductsStore(),
-      chosenDate: '2023-06-13'
+      productsStore: useProductsStore()
     }
   },
   computed: {
     ...mapState(useRecordsStore, {
-      normOfCalories: (store) => store.getNormOfCalories,
+      normOfCalories: store => store.getNormOfCalories,
     }),
+    chosenDate() {
+      return this.recordsStore.chosenDate;
+    },
     totalCalories() {
       let sum = 0;
       useRecordsStore().recordByDate(this.chosenDate).totalCalories.forEach(item => sum += item);
       return sum;
     }
   },
-  beforeMount() {
-    useProductsStore().fetchProducts();
-    useRecordsStore().fetchSettings();
-    useRecordsStore().fetchRecords();
+  methods: {
+    onInputChosenDate(e) {
+      this.recordsStore.setChosenDate(e.target.value);
+    }
   }
 }
 </script>

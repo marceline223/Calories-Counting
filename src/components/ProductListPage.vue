@@ -2,7 +2,7 @@
   <div class="content">
     <div class="d-flex justify-content-between align-items-center">
       <h4>Справочник</h4>
-      <div class="input-group align-content-center">
+      <div class="input-group align-content-center search">
         <input
             v-model="stringForSearch"
             type="text"
@@ -10,7 +10,6 @@
             class="form-control"
         >
       </div>
-
     </div>
     <table class="table table-bordered">
       <thead>
@@ -25,7 +24,7 @@
       <tbody>
       <tr
           v-for="product in productsForPage"
-          :key="product.name"
+          :key="product.id"
       >
         <td>{{ product.name }}</td>
         <td>{{ product.calories }}</td>
@@ -36,8 +35,8 @@
       </tbody>
     </table>
 
-    <div class="d-flex">
-      <nav class="col">
+    <div class="d-flex justify-content-between">
+      <nav>
         <ul class="pagination">
           <!--переход на предыдущую страницу-->
           <li class="page-item">
@@ -107,14 +106,14 @@
         </ul>
       </nav>
 
-      <div class="input-group">
+      <div class="input-group page-input">
         <span class="input-group-text">
           Страница
         </span>
         <input
             v-model="chosenPageInput"
             type="number"
-            class="form-control"
+            class="form-control form-control-sm"
             inputmode="numeric"
         >
         <button
@@ -145,9 +144,8 @@ export default {
   computed: {
     products() {
       //поиск по строке
-      console.log(this.stringForSearch);
       if (this.stringForSearch && this.stringForSearch !== '') {
-        return this.store.products.filter(item => item.name.toLowerCase().includes(this.stringForSearch))
+        return this.store.products.filter(item => item.name.toLowerCase().includes(this.stringForSearch.toLowerCase())).sort();
       }
       return this.store.products;
     },
@@ -160,9 +158,6 @@ export default {
 
       return this.products.slice(start, end);
     }
-  },
-  beforeMount() {
-    useProductsStore().fetchProducts();
   },
   methods: {
     nextPage() {
@@ -218,10 +213,15 @@ export default {
   color: black;
 }
 
-.input-group {
+.search {
+  width: 25em;
+}
+
+.page-input {
   width: 15em;
   height: 1em;
 }
+
 
 .form-control {
   width: 25em;

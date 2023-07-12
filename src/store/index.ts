@@ -3,92 +3,17 @@ import {ProductInfo} from "./store-types";
 
 export const useRecordsStore = defineStore('recordsStore', {
     state: () => ({
-        records: [
-            {
-                date: '2023-06-13',
-                totalCalories: [0, 0, 0],
-                breakfast: [
-                    {
-                        id: 1,
-                        productId: 1,
-                        count: 300
-                    },
-                    {
-                        id: 2,
-                        productId: 2,
-                        count: 150
-                    },
-                    {
-                        id: 3,
-                        productId: 3,
-                        count: 200
-                    }
-                ],
-                lunch: [
-                    {
-                        id: 4,
-                        productId: 1,
-                        count: 100
-                    },
-                    {
-                        id: 5,
-                        productId: 5,
-                        count: 120
-                    }
-                ],
-                dinner: [
-                    {
-                        id: 6,
-                        productId: 1,
-                        count: 350
-                    },
-                    {
-                        id: 7,
-                        productId: 10,
-                        count: 50
-                    }
-                ]
-            },
-            {
-                date: '2023-06-12',
-                totalCalories: [0, 0, 0],
-                breakfast: [
-                    {
-                        id: 8,
-                        productId: 5,
-                        count: 100
-                    }
-                ],
-                lunch: [
-                    {
-                        id: 9,
-                        productId: 4,
-                        count: 200
-                    },
-                    {
-                        id: 10,
-                        productId: 1,
-                        count: 60
-                    }
-                ],
-                dinner: [
-                    {
-                        id: 11,
-                        productId: 2,
-                        count: 25
-                    }
-                ]
-
-            }
-        ],
+        records: [],
         settings: {
-            normOfCalories: null,
+            normOfCalories: 0,
             weight: null,
             height: null,
             age: null,
             sex: 'female',
             activity: 1.2
-        }
+        },
+        currentId: 12,
+        chosenDate: null
     }),
     getters: {
         allRecords: (state) => {
@@ -97,12 +22,14 @@ export const useRecordsStore = defineStore('recordsStore', {
         recordByDate(state) {
             return (date) => {
                 const record = state.records.find((record) => record.date === date);
-                if (record){
-                    return record
+                if (record) {
+                    // если уже есть запись с этой датой, возвращаем её
+                    return record;
                 }
+                // иначе - возвращаем пустую запись, но не добавляем её в массив до действий пользователя с ней
                 return {
                     date: date,
-                    totalCalories: [0,0,0],
+                    totalCalories: [0, 0, 0],
                     breakfast: [],
                     lunch: [],
                     dinner: []
@@ -121,6 +48,7 @@ export const useRecordsStore = defineStore('recordsStore', {
             } else {
                 localStorage.setItem('records', JSON.stringify(this.records));
             }
+            this.fetchCurrentId();
         },
         async fetchSettings() {
             const storedSettings = localStorage.getItem('settings');
@@ -129,6 +57,30 @@ export const useRecordsStore = defineStore('recordsStore', {
             } else {
                 localStorage.setItem('settings', JSON.stringify(this.settings));
             }
+        },
+        async fetchChosenDate() {
+            const storedChosenDate = localStorage.getItem('chosenDate');
+            if (storedChosenDate) {
+                this.setChosenDate(JSON.parse(storedChosenDate));
+            } else {
+                localStorage.setItem('chosenDate', JSON.stringify(this.chosenDate));
+            }
+        },
+        async fetchCurrentId() {
+            const storedId = localStorage.getItem('currentId');
+            if (storedId) {
+                this.setCurrentId(JSON.parse(storedId));
+            } else {
+                localStorage.setItem('currentId', JSON.stringify(this.currentId));
+            }
+        },
+        setCurrentId(payload) {
+            this.currentId = payload;
+            localStorage.setItem('currentId', JSON.stringify(this.currentId));
+        },
+        setChosenDate(payload) {
+            this.chosenDate = payload;
+            localStorage.setItem('chosenDate', JSON.stringify(this.chosenDate));
         },
         setRecords(payload) {
             this.records = payload;
@@ -142,15 +94,77 @@ export const useRecordsStore = defineStore('recordsStore', {
             this.recordByDate(payload.date).totalCalories[payload.index] = payload.calories;
             localStorage.setItem('records', JSON.stringify(this.records));
         },
-        deleteFromMeal(payload){
+        editMeal(payload) {
+            const record = this.records.find((record) => record.date === payload.date);
+            switch (payload.type) {
+                case 'breakfast': {
+                    const eatenProduct = record.breakfast.find((product) => product.id === payload.eatenProductId);
+                    eatenProduct.count = payload.count;
+                    localStorage.setItem('records', JSON.stringify(this.records));
+                    break;
+                }
+                case 'lunch': {
+                    const eatenProduct = record.lunch.find((eatenProduct)=>eatenProduct.id === payload.eatenProductId)
+                    eatenProduct.count = payload.count;
+                    localStorage.setItem('records', JSON.stringify(this.records));
+                    break;
+                }
+                case 'dinner': {
+                    const eatenProduct = record.dinner.find((eatenProduct)=>eatenProduct.id === payload.eatenProductId)
+                    eatenProduct.count = payload.count;
+                    localStorage.setItem('records', JSON.stringify(this.records));
+                    break;
+                }
+            }
+        },
+        addToMeal(payload) {
+            let record = this.records.find((record) => record.date === payload.date);
+            if (!record) {
+                this.records.push({
+                    date: payload.date,
+                    totalCalories: [0, 0, 0],
+                    breakfast: [],
+                    lunch: [],
+                    dinner: []
+                });
+                record = this.records.find((record) => record.date === payload.date);
+            }
+            switch (payload.type) {
+                case 'breakfast': {
+                    record.breakfast.push({
+                        id: this.currentId,
+                        productId: payload.productId,
+                        count: payload.count
+                    });
+                    this.setCurrentId(this.currentId+1);
+                    break;
+                }
+                case 'lunch': {
+                    record.lunch.push({
+                        id: this.currentId,
+                        productId: payload.productId,
+                        count: payload.count
+                    });
+                    this.setCurrentId(this.currentId+1);
+                    break;
+                }
+                case 'dinner': {
+                    record.dinner.push({
+                        id: this.currentId,
+                        productId: payload.productId,
+                        count: payload.count
+                    });
+                    this.setCurrentId(this.currentId+1);
+                    break;
+                }
+            }
+
+        },
+        deleteFromMeal(payload) {
             const record = this.recordByDate(payload.date);
-            console.log(payload.date);
-            console.log('record = ' + record.name);
             switch (payload.type) {
                 case 'breakfast': {
                     const index = record.breakfast.findIndex(item => item.id === payload.id);
-                    console.log('item id = ' + payload.id)
-                    console.log(index);
                     if (index !== -1) {
                         record.breakfast.splice(index, 1);
                     }

@@ -1,14 +1,40 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top mb-2">
     <div class="container-fluid justify-content-start">
-      <router-link to="/main" class="navbar-brand">
-        <img src="/logo.png" alt="ЗОЖ-Учёт" width="30">
+      <router-link
+          to="/main"
+          class="navbar-brand"
+      >
+        <img
+            src="/logo.png"
+            alt="ЗОЖ-Учёт"
+        >
       </router-link>
       <div>
-        <router-link to="/main" class="mx-3">Главная</router-link>
-        <router-link to="/statistic" class="mx-3">Статистика</router-link>
-        <router-link to="/product-list" class="mx-3">Справочник</router-link>
-        <router-link to="/settings" class="mx-3">Настройки</router-link>
+        <router-link
+            to="/main"
+            class="mx-3"
+        >
+          Главная
+        </router-link>
+        <router-link
+            to="/statistic"
+            class="mx-3"
+        >
+          Статистика
+        </router-link>
+        <router-link
+            to="/product-list"
+            class="mx-3"
+        >
+          Справочник
+        </router-link>
+        <router-link
+            to="/settings"
+            class="mx-3"
+        >
+          Настройки
+        </router-link>
       </div>
     </div>
   </nav>
@@ -24,12 +50,14 @@ export default {
 </script>
 
 <style scoped>
-  a {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-    font-size: large;
-  }
+a {
+  text-decoration: none;
+  color: black;
+  font-size: medium;
+  font-weight: bold;
+}
 
-
+img {
+  width: 2em;
+}
 </style>
