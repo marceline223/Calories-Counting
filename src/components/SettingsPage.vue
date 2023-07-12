@@ -148,7 +148,7 @@
     </div>
 
     <button
-        class="btn btn-outline-primary"
+        class="btn btn-labeled btn-success"
         :disabled="!checkForms"
         @click="saveSettings"
     >
@@ -165,7 +165,7 @@ export default {
   name: "SettingsPage",
   data() {
     return {
-      store: useRecordsStore(),
+      recordsStore: useRecordsStore(),
       input: {
         sex: {
           value: 'female'
@@ -209,12 +209,12 @@ export default {
     }
   },
   beforeMount() {
-    this.store.fetchSettings();
-    this.input.sex.value = this.store.settings.sex;
-    this.input.age.value = this.store.settings.age;
-    this.input.activity.value = this.store.settings.activity;
-    this.input.weight.value = this.store.settings.weight;
-    this.input.height.value = this.store.settings.height;
+    // this.recordsStore.fetchSettings();
+    this.input.sex.value = this.recordsStore.settings.sex;
+    this.input.age.value = this.recordsStore.settings.age;
+    this.input.activity.value = this.recordsStore.settings.activity;
+    this.input.weight.value = this.recordsStore.settings.weight;
+    this.input.height.value = this.recordsStore.settings.height;
     this.input.age.isValid = this.input.age.pattern.test(this.input.age.value) && (this.input.age.value < 200);
     this.input.height.isValid = this.input.height.pattern.test(this.input.height.value) && (this.input.height.value < 300);
     this.input.weight.isValid = this.input.weight.pattern.test(this.input.weight.value);
@@ -222,7 +222,7 @@ export default {
   methods: {
     saveSettings() {
       //отправка в pinia
-      this.store.setSettings({
+      this.recordsStore.setSettings({
         normOfCalories: this.normOfCalories,
         weight: this.input.weight.value,
         height: this.input.height.value,
@@ -236,17 +236,17 @@ export default {
       switch (type) {
         case 'age':
           this.input.age.value = e.target.value;
-          this.input.age.isValid = this.input.age.pattern.test(this.input.age.value) && (this.input.age.value < 200);
+          this.input.age.isValid = this.input.age.pattern.test(this.input.age.value) && (this.input.age.value < 200) && (this.input.age.value > 0);
           this.input.age.isDirty = true;
           break;
         case 'height':
           this.input.height.value = e.target.value;
-          this.input.height.isValid = this.input.height.pattern.test(this.input.height.value) && (this.input.height.value < 300);
+          this.input.height.isValid = this.input.height.pattern.test(this.input.height.value) && (this.input.height.value < 300) && (this.input.height.value > 0);
           this.input.height.isDirty = true;
           break;
         case 'weight':
           this.input.weight.value = e.target.value;
-          this.input.weight.isValid = this.input.weight.pattern.test(this.input.weight.value);
+          this.input.weight.isValid = this.input.weight.pattern.test(this.input.weight.value) && (this.input.weight.value > 0);
           this.input.weight.isDirty = true;
           break;
       }
@@ -274,7 +274,6 @@ export default {
 }
 
 i {
-  font-size: 1rem;
-  margin-left: 1rem;
+  font-size: 1em;
 }
 </style>
