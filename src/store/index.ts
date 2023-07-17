@@ -1,6 +1,8 @@
 import {defineStore} from 'pinia'
 import {ProductInfo} from "./store-types";
 
+import * as moment from "moment";
+
 export const useRecordsStore = defineStore('recordsStore', {
     state: () => ({
         records: [],
@@ -12,16 +14,13 @@ export const useRecordsStore = defineStore('recordsStore', {
             sex: 'female',
             activity: 1.2
         },
-        currentId: 12,
+        currentId: 0,
         chosenDate: null
     }),
     getters: {
-        allRecords: (state) => {
-            return state.records;
-        },
         recordByDate(state) {
             return (date) => {
-                const record = state.records.find((record) => record.date === date);
+                const record = state.records.find((record) => record.date.isSame(date, 'd'));
                 if (record) {
                     // если уже есть запись с этой датой, возвращаем её
                     return record;
@@ -30,18 +29,18 @@ export const useRecordsStore = defineStore('recordsStore', {
                 return {
                     date: date,
                     totalCalories: [0, 0, 0],
+                    proteins: [0, 0, 0],
+                    carbs: [0, 0, 0],
+                    fats: [0, 0, 0],
                     breakfast: [],
                     lunch: [],
                     dinner: []
                 }
             }
-        },
-        getNormOfCalories(state) {
-            return state.settings.normOfCalories;
         }
     },
     actions: {
-        async fetchRecords() {
+       fetchRecords() {
             const storedRecords = localStorage.getItem('records');
             if (storedRecords) {
                 this.setRecords(JSON.parse(storedRecords));
@@ -50,7 +49,7 @@ export const useRecordsStore = defineStore('recordsStore', {
             }
             this.fetchCurrentId();
         },
-        async fetchSettings() {
+        fetchSettings() {
             const storedSettings = localStorage.getItem('settings');
             if (storedSettings) {
                 this.setSettings(JSON.parse(storedSettings));
@@ -58,7 +57,7 @@ export const useRecordsStore = defineStore('recordsStore', {
                 localStorage.setItem('settings', JSON.stringify(this.settings));
             }
         },
-        async fetchChosenDate() {
+        fetchChosenDate() {
             const storedChosenDate = localStorage.getItem('chosenDate');
             if (storedChosenDate) {
                 this.setChosenDate(JSON.parse(storedChosenDate));
@@ -66,7 +65,7 @@ export const useRecordsStore = defineStore('recordsStore', {
                 localStorage.setItem('chosenDate', JSON.stringify(this.chosenDate));
             }
         },
-        async fetchCurrentId() {
+        fetchCurrentId() {
             const storedId = localStorage.getItem('currentId');
             if (storedId) {
                 this.setCurrentId(JSON.parse(storedId));
@@ -90,12 +89,18 @@ export const useRecordsStore = defineStore('recordsStore', {
             this.settings = payload;
             localStorage.setItem('settings', JSON.stringify(this.settings));
         },
-        setTotalCalories(payload) {
-            this.recordByDate(payload.date).totalCalories[payload.index] = payload.calories;
+        setTotal(payload) {
+            const record = this.recordByDate(payload.date);
+
+            record.totalCalories[payload.index] = payload.calories;
+            record.fats[payload.index] = payload.fats;
+            record.carbs[payload.index] = payload.carbs;
+            record.proteins[payload.index] = payload.proteins;
+
             localStorage.setItem('records', JSON.stringify(this.records));
         },
         editMeal(payload) {
-            const record = this.records.find((record) => record.date === payload.date);
+            const record = this.records.find((record) => record.date.isSame(payload.date, 'd'));
             switch (payload.type) {
                 case 'breakfast': {
                     const eatenProduct = record.breakfast.find((product) => product.id === payload.eatenProductId);
@@ -123,6 +128,9 @@ export const useRecordsStore = defineStore('recordsStore', {
                 this.records.push({
                     date: payload.date,
                     totalCalories: [0, 0, 0],
+                    proteins: [0, 0, 0],
+                    carbs: [0, 0, 0],
+                    fats: [0, 0, 0],
                     breakfast: [],
                     lunch: [],
                     dinner: []
@@ -194,14 +202,6 @@ export const useProductsStore = defineStore('productsStore', {
         products: [] as ProductInfo[],
         currentId: 0
     }),
-    getters: {
-        getProductById: (state) => {
-            return (id) => state.products.find((product) => product.id === id)
-        },
-        getProductNameById: (state) => {
-            return (id) => state.products.find((product) => product.id === id).name;
-        }
-    },
     actions: {
         async fetchProducts() {
             const storedProductList = localStorage.getItem('products');
@@ -214,11 +214,6 @@ export const useProductsStore = defineStore('productsStore', {
                     this.currentId = productList.length;
 
                     localStorage.setItem('products', JSON.stringify(productList));
-                    // для заполнения айдишников (уже не понадобится)
-                    // for (let i = this.currentId; i < this.products.length; i++) {
-                    //     this.products[i].id = i;
-                    //     this.currentId++;
-                    // }
                 } catch (error) {
                     console.error('Failed to load products:', error);
                 }

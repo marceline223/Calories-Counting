@@ -1,6 +1,9 @@
 export interface Record {
     date: Date,
     totalCalories: number[],
+    proteins: number[],
+    carbs: number[],
+    fats: number[],
     breakfast: Meal,
     lunch: Meal,
     dinner: Meal
