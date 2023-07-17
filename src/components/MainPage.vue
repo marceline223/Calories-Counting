@@ -4,7 +4,7 @@
       <div class="input-group col">
         <input
             id="calendar"
-            :value="chosenDate"
+            :value="chosenDateForCalendar"
             type="date"
             class="form-control"
             @input="onInputChosenDate"
@@ -20,19 +20,19 @@
       </div>
     </div>
 
-    <!--ЗАВТРАК-->
+    <!-- завтрак -->
     <meal-component
         :chosen-date="chosenDate"
         meal-type="breakfast"
     />
 
-    <!--ОБЕД-->
+    <!-- обед -->
     <meal-component
         :chosen-date="chosenDate"
         meal-type="lunch"
     />
 
-    <!--УЖИН-->
+    <!-- ужин -->
     <meal-component
         :chosen-date="chosenDate"
         meal-type="dinner"
@@ -42,8 +42,9 @@
 
 <script>
 import {useRecordsStore, useProductsStore} from "../store/index.ts";
-import {mapState} from "pinia";
+import {mapActions, mapState} from "pinia";
 import MealComponent from "./Meal.vue";
+import moment from "moment";
 
 export default {
   name: "MainPage",
@@ -56,20 +57,25 @@ export default {
   },
   computed: {
     ...mapState(useRecordsStore, {
-      normOfCalories: store => store.getNormOfCalories,
+      normOfCalories: store => store.settings.normOfCalories,
+      chosenDate: store => store.chosenDate,
+      recordByDate: "recordByDate"
     }),
-    chosenDate() {
-      return this.recordsStore.chosenDate;
-    },
     totalCalories() {
       let sum = 0;
-      useRecordsStore().recordByDate(this.chosenDate).totalCalories.forEach(item => sum += item);
+      this.recordByDate(this.chosenDate).totalCalories.forEach(item => sum += item);
       return sum;
+    },
+    chosenDateForCalendar() {
+      return moment(this.chosenDate).format('YYYY-MM-DD');
     }
   },
   methods: {
+    ...mapActions(useRecordsStore, {
+      setChosenDate: "setChosenDate"
+    }),
     onInputChosenDate(e) {
-      this.recordsStore.setChosenDate(e.target.value);
+      this.setChosenDate(moment.utc(e.target.value));
     }
   }
 }

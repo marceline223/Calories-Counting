@@ -3,7 +3,6 @@
     <h4>
       Статистика
     </h4>
-    {{normOfCalories}}
     <div class="row justify-content-around">
       <div class="input-group">
         <span class="input-group-text">
@@ -11,10 +10,11 @@
         </span>
         <input
             id="calendar"
-            v-model="firstDate"
+            :value="getDateForCalendar('first')"
             :max="secondDate"
             type="date"
             class="form-control"
+            @input="onInputDate('first', $event)"
         >
       </div>
       <div class="input-group">
@@ -23,10 +23,11 @@
         </span>
         <input
             id="calendar"
-            v-model="secondDate"
+            :value="getDateForCalendar('second')"
             :min="firstDate"
             type="date"
             class="form-control"
+            @input="onInputDate('second', $event)"
         >
       </div>
     </div>
@@ -36,7 +37,7 @@
     <div class="chart-container my-3">
       <Bar
           id="123"
-          :data="getBarData"
+          :data="getCaloriesBarData"
           :options="options"
       />
     </div>
@@ -46,7 +47,7 @@
     <div class="chart-container my-3">
       <Bar
           id="123"
-          :data="getBarData"
+          :data="getMacronutrientsBarData"
           :options="options"
       />
     </div>
@@ -60,6 +61,7 @@ import {Chart as Chart, Title, Tooltip, Legend, BarElement, CategoryScale, Linea
 import annotationPlugin from 'chartjs-plugin-annotation';
 import {useRecordsStore} from "../store/index.ts";
 import {mapState} from "pinia";
+import moment from "moment";
 
 Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, annotationPlugin);
 
@@ -71,8 +73,18 @@ export default {
       firstDate: null,
       secondDate: null,
       recordsStore: useRecordsStore(),
-      normOfCalories: this.normOfCalories,
-      options: {
+    }
+  },
+  computed: {
+    ...mapState(useRecordsStore, {
+      recordByDate: "recordByDate",
+      normOfCalories: store => store.settings.normOfCalories,
+    }),
+    getNormOfCalories() {
+      return this.recordsStore.settings.normOfCalories;
+    },
+    options() {
+      return {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
@@ -80,8 +92,7 @@ export default {
             stacked: true
           },
           y: {
-            stacked: true,
-            max: this.normOfCalories
+            stacked: true
           }
         },
         plugins: {
@@ -89,28 +100,24 @@ export default {
             annotations: {
               normOfCaloriesLine: {
                 type: 'line',
-                scaleID: 'y',
-                value: this.normOfCalories,
+                mode: 'horizontal',
+                value: this.getNormOfCalories,
+                drawTime: 'afterDatasetsDraw',
                 borderColor: 'green',
-                borderWidth: 2
+                borderWidth: 2,
+                label: {
+                  enabled: true,
+                  content: 'Норма',
+                  position: 'end',
+                  drawTime: 'afterDatasetsDraw',
+                  backgroundColor: 'rgba(238, 68, 226,0.4)'
+                }
               }
             }
           }
         }
       }
-    }
-  },
-  computed: {
-    ...mapState(useRecordsStore, {
-      getRecordByDateObj(store) {
-        return (date) => store.records.find(record => {
-          return this.areDatesEquals(this.dateFromString(record.date), new Date(date));
-        });
-      },
-      normOfCalories: store => store.getNormOfCalories,
-    }),
-    getNorm() {
-      return this.normOfCalories;
+
     },
     getLabels() {
       if (this.firstDate && this.secondDate) {
@@ -125,7 +132,7 @@ export default {
       }
       return [];
     },
-    getBarDataSets() {
+    getCaloriesDataSet() {
       const datasets = [];
       if (this.firstDate && this.secondDate) {
         const tempData = {
@@ -137,7 +144,7 @@ export default {
         const second = new Date(this.secondDate);
 
         for (let i = first; i <= second; i.setDate(i.getDate() + 1)) {
-          const record = this.getRecordByDateObj(i);
+          const record = this.recordByDate(i);
           if (record) {
             tempData.breakfast.push(record.totalCalories[0]);
             tempData.lunch.push(record.totalCalories[1]);
@@ -167,30 +174,87 @@ export default {
       }
       return [];
     },
-    getBarData() {
+    getMacronutrientsDataSet() {
+      const datasets = [];
+      if (this.firstDate && this.secondDate) {
+        const tempData = {
+          carbs: [],
+          fats: [],
+          proteins: []
+        };
+        const firstDate = moment(this.firstDate);
+        const secondDate = moment(this.secondDate);
+
+        for (let i = firstDate; i <= secondDate; i.add(1, 'd')) {
+          const record = this.recordByDate(i);
+          if (record) {
+            tempData.fats.push(record.fats.reduce((a, b) => a + b, 0));
+            tempData.carbs.push(record.carbs.reduce((a, b) => a + b, 0));
+            tempData.proteins.push(record.proteins.reduce((a, b) => a + b, 0));
+          } else {
+            tempData.fats.push(0);
+            tempData.carbs.push(0);
+            tempData.proteins.push(0);
+          }
+        }
+        datasets.push({
+          label: 'Белки',
+          data: tempData.proteins,
+          backgroundColor: '#D6E9C6',
+        });
+        datasets.push({
+          label: 'Жиры',
+          data: tempData.fats,
+          backgroundColor: '#FAEBCC',
+        });
+        datasets.push({
+          label: 'Углеводы',
+          data: tempData.carbs,
+          backgroundColor: '#EBCCD1',
+        });
+        return datasets;
+      }
+      return [];
+    },
+    getCaloriesBarData() {
       return {
         labels: this.getLabels,
-        datasets: this.getBarDataSets
+        datasets: this.getCaloriesDataSet
       }
     },
+    getMacronutrientsBarData() {
+      return {
+        labels: this.getLabels,
+        datasets: this.getMacronutrientsDataSet
+      }
+    }
   },
   methods: {
-    dateFromString(dateStr) {
-      const dateResult = new Date();
-      const day = Number.parseInt(dateStr.slice(8, 10));
-      const month = Number.parseInt(dateStr.slice(5, 7)) - 1;
-      const year = Number.parseInt(dateStr.slice(0, 4));
-
-      dateResult.setFullYear(year, month, day);
-
-      return dateResult;
+    onInputDate(type, e) {
+      // преобразуем данные от календаря в объект
+      switch (type) {
+        case 'first':
+          this.firstDate = moment.utc(e.target.value);
+          break;
+        case 'second':
+          this.secondDate = moment.utc(e.target.value);
+          break;
+      }
     },
-
-    areDatesEquals(first, second) {
-      return (first.getFullYear() === second.getFullYear()
-          && first.getMonth() === second.getMonth()
-          && first.getDate() === second.getDate()
-      )
+    getDateForCalendar(type) {
+      // календарь использует такой формат даты
+      switch (type) {
+        case 'first':
+          if (this.firstDate) {
+            return this.firstDate.format('YYYY-MM-DD');
+          }
+          return null;
+        case 'second':
+          if (this.secondDate) {
+            return this.secondDate.format('YYYY-MM-DD');
+          }
+          return null;
+      }
     }
   }
 }

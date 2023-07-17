@@ -1,10 +1,14 @@
 <template>
-  <div class="modal">
+  <div
+      :id="mealType"
+      class="modal"
+      aria-hidden="true"
+  >
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title align-content-center mt-1">
-            Добавить запись: {{ mealName }} {{ date }}
+            Добавить запись: {{ mealName }} {{ getFormattedDate }}
           </h5>
           <button
               type="button"
@@ -14,16 +18,16 @@
           />
         </div>
         <div class="modal-body">
-          <!-- ТАБЛИЦА -->
-          <div class="row  justify-content-between">
+          <div class="row justify-content-between">
             <div class="col mb-4">
               <div class="d-flex align-items-center">
                 <h6>Продукт: </h6>
                 <span class="mx-2">
-                   {{ chosenProductName || "Выберите продукт"}}
+                   {{ chosenProductName || "Выберите продукт" }}
                 </span>
               </div>
 
+              <!-- ввод количества -->
               <div class="input-group amount">
                 <input
                     :value="countOfProduct.value"
@@ -35,13 +39,15 @@
                 <span class="input-group-text">
                 г
                 </span>
-              <i
-                  v-if="countOfProduct.isDirty"
-                  class="bi mx-3 my-auto"
-                  :class="getIconClass"
-              />
+                <i
+                    v-if="countOfProduct.isDirty"
+                    class="bi mx-3 my-auto"
+                    :class="getIconClass"
+                />
               </div>
             </div>
+
+            <!-- поиск по списку -->
             <div class="input-group search align-content-end mb-4">
               <input
                   v-model="stringForSearch"
@@ -51,6 +57,8 @@
               >
             </div>
           </div>
+
+          <!-- список -->
           <table class="table table-bordered">
             <thead>
             <tr>
@@ -73,7 +81,7 @@
               <td>{{ product.fats }}</td>
               <td>{{ product.carbs }}</td>
               <td>
-                <!-- ВЫБОР ПРОДУКТА -->
+                <!-- выбор продукта для добавления -->
                 <div class="form-check">
                   <input
                       :id="product.id"
@@ -88,9 +96,12 @@
             </tr>
             </tbody>
           </table>
+
+          <!-- пагинация -->
           <div class="d-flex justify-content-between">
             <nav>
               <ul class="pagination">
+
                 <!--переход на предыдущую страницу-->
                 <li class="page-item">
                   <button
@@ -144,7 +155,6 @@
                   </li>
                 </div>
 
-
                 <!--переход на следующую страницу-->
                 <li class="page-item">
                   <button
@@ -159,6 +169,7 @@
               </ul>
             </nav>
 
+            <!-- переход по номеру страницы -->
             <div class="input-group page-input">
               <span class="input-group-text">
                 Страница
@@ -185,7 +196,7 @@
               :disabled="!countOfProduct.isValid"
               @click="addToMeal"
           >
-            Сохранить
+            Добавить
           </button>
         </div>
       </div>
@@ -195,7 +206,8 @@
 
 <script>
 import {useProductsStore, useRecordsStore} from "../store/index.ts";
-import moment from 'moment'
+import {mapState} from "pinia";
+import moment from "moment";
 
 export default {
   name: "AddMeal",
@@ -221,12 +233,17 @@ export default {
       }
     }
   },
-  mount() {
-    console.log(this.mealType)
-  },
   computed: {
-    date() {
-      return moment(this.chosenDate).format('DD.MM.YYYY');
+    ...mapState(useRecordsStore, {
+      chosenDate: store => store.chosenDate
+    }),
+    ...mapState(useProductsStore, {
+      getProductNameById: (store) => {
+        return (id) => store.products.find((product) => product.id === id).name;
+      }
+    }),
+    getFormattedDate() {
+      return moment(this.chosenDate).format("DD.MM.YYYY");
     },
     products() {
       //если пользователь использовал поиск по строке
@@ -259,12 +276,9 @@ export default {
     },
     chosenProductName() {
       if (this.chosenProductId !== null) {
-        return this.productStore.getProductNameById(this.chosenProductId);
+        return this.getProductNameById(this.chosenProductId);
       }
       return null;
-    },
-    chosenDate() {
-      return this.recordsStore.chosenDate;
     },
     getIconClass() {
       return this.countOfProduct.isValid ? 'bi-check-circle text-success' : 'bi-exclamation-circle text-danger';
@@ -285,9 +299,6 @@ export default {
       }
     }
   },
-  beforeMount() {
-    this.productStore.fetchProducts();
-  },
   methods: {
     nextPage() {
       if (this.currentPage < this.pageCount - 1) {
@@ -298,15 +309,6 @@ export default {
       if (this.currentPage > 0) {
         this.currentPage--;
       }
-    },
-    addToMeal() {
-      console.log('addToMeal in AddMeal.vue');
-      this.recordsStore.addToMeal({
-        date: this.chosenDate,
-        type: this.mealType,
-        productId: this.chosenProductId,
-        count: this.countOfProduct.value
-      });
     },
     pageNumberStyleClass(pageNumber) {
       if (pageNumber === this.currentPage) {
@@ -321,6 +323,17 @@ export default {
       } else {
         this.currentPage = this.pageCount - 1;
       }
+    },
+    addToMeal() {
+      this.recordsStore.addToMeal({
+        date: this.chosenDate,
+        type: this.mealType,
+        productId: this.chosenProductId,
+        count: this.countOfProduct.value
+      });
+    },
+    onInputDate(e) {
+      this.chosenDate = moment(e.target.value);
     },
     onInputAmountOfProduct(e) {
       this.countOfProduct.value = e.target.value;

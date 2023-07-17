@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia'
 import {ProductInfo} from "./store-types";
-
-import * as moment from "moment";
+import moment from "moment";
 
 export const useRecordsStore = defineStore('recordsStore', {
     state: () => ({
@@ -20,7 +19,7 @@ export const useRecordsStore = defineStore('recordsStore', {
     getters: {
         recordByDate(state) {
             return (date) => {
-                const record = state.records.find((record) => record.date.isSame(date, 'd'));
+                const record = state.records.find((record) => moment(record.date).isSame(date, 'd'));
                 if (record) {
                     // если уже есть запись с этой датой, возвращаем её
                     return record;

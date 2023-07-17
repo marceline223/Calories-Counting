@@ -1,11 +1,5 @@
 <template>
   <div class="card col-8 mx-auto my-3">
-    <add-meal
-        v-if="showAddingDialog"
-        :id="mealType"
-        :key="showAddingDialog"
-        :meal-type="mealType"
-    />
     <div class="card-header d-flex align-items-center justify-content-between">
       <h6 class="my-auto">
         {{ mealName }}
@@ -20,10 +14,12 @@
             data-bs-toggle="modal"
             :data-bs-target="'#' + mealType"
             :disabled="!chosenDate"
-            @click="onClickShowAddDialog"
         >
           <i class="bi bi-plus-circle"/>
         </button>
+        <add-meal
+            :meal-type="mealType"
+        />
       </div>
     </div>
 
@@ -77,6 +73,7 @@
           <td>{{ meal.carbs.toFixed(2) }}</td>
           <td>{{ meal.calories.toFixed(2) }}</td>
           <td>
+            <!-- сохранить изменения -->
             <button
                 v-if="productIdForEditing === meal.id"
                 type="button"
@@ -86,6 +83,8 @@
             >
               <i class="bi bi-check-circle text-success"/>
             </button>
+
+            <!-- редактировать -->
             <button
                 v-else
                 type="button"
@@ -96,14 +95,17 @@
             </button>
           </td>
           <td>
+            <!-- отменить редактирование -->
             <button
                 v-if="productIdForEditing === meal.id"
                 type="button"
                 class="btn btn-light p-0"
-                @click="productIdForEditing = null"
+                @click="cancelChanges"
             >
               <i class="bi bi-arrow-counterclockwise"/>
             </button>
+
+            <!-- удалить продукт из записи -->
             <button
                 v-else
                 type="button"
@@ -145,11 +147,13 @@ export default {
   },
   computed: {
     ...mapState(useRecordsStore, {
-      getRecordByDate: (store) => (date) => store.records.find((record) => record.date === date)
+      chosenDate: store => store.chosenDate
     }),
-    chosenDate() {
-      return this.recordsStore.chosenDate;
-    },
+    ...mapState(useProductsStore, {
+      getProductById: (store) => {
+        return (id) => store.products.find((product) => product.id === id)
+      }
+    }),
     mealName() {
       switch (this.mealType) {
         case 'breakfast':
@@ -184,7 +188,7 @@ export default {
         carbs: 0
       }
       for (const eatenProduct of eatenProducts) {
-        const productInfo = this.productsStore.getProductById(eatenProduct.productId);
+        const productInfo = this.getProductById(eatenProduct.productId);
         const calories = Number.parseFloat(productInfo.calories.replace(',', '.')) * eatenProduct.count / 100;
         const proteins = Number.parseFloat(productInfo.proteins.replace(',', '.')) * eatenProduct.count / 100;
         const fats = Number.parseFloat(productInfo.fats.replace(',', '.')) * eatenProduct.count / 100;
@@ -216,10 +220,13 @@ export default {
           mealIndex = 2;
           break;
       }
-      this.recordsStore.setTotalCalories({
+      this.setTotal({
         date: this.chosenDate,
         index: mealIndex,
-        calories: total.calories
+        calories: total.calories,
+        carbs: total.carbs,
+        proteins: total.proteins,
+        fats: total.fats
       })
       return {
         meals: productsInfo,
@@ -239,15 +246,12 @@ export default {
         date: this.chosenDate
       });
     },
-    onClickShowAddDialog() {
-      // ПЕРЕДЕЛАТЬ ЧЕТ НЕ РАБОТАЕТ
-      this.showAddingDialog = true;
-      this.$nextTick(() => {
-        $('#myModal').modal('show');
-      });
-    },
     editCount(productIdForEditing) {
       this.productIdForEditing = productIdForEditing;
+    },
+    cancelChanges() {
+      this.newCount = null;
+      this.productIdForEditing = null;
     },
     saveCount() {
       this.editMeal({
@@ -259,7 +263,8 @@ export default {
       this.productIdForEditing = null;
     },
     ...mapActions(useRecordsStore, {
-      editMeal: 'editMeal'
+      editMeal: "editMeal",
+      setTotal: "setTotal"
     })
   }
 }
