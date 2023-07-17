@@ -7,9 +7,10 @@ import SettingsPage from "../components/SettingsPage.vue"
 
 const routes = [
     {
-        path: '/main',
+        path: '/',
         name: 'Main',
-        component: MainPage
+        component: MainPage,
+        alias: '/main'
     },
     {
         path: '/statistic',
