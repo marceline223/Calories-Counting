@@ -1,5 +1,20 @@
 <template>
   <div class="content">
+    <div
+        v-if="!normOfCalories"
+        id="mainPageAlert"
+        class="alert alert-primary d-flex justify-content-between"
+        role="alert"
+    >
+        Вы можете рассчитать свою норму калорий на странице настроек.
+      <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          data-bs-target="#mainPageAlert"
+          aria-label="Закрыть"
+      />
+    </div>
     <div class="col-8 mx-auto d-flex">
       <div class="input-group col">
         <input

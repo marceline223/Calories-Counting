@@ -1,8 +1,24 @@
 <template>
   <div class="content">
+    <div
+        v-if="!normOfCalories"
+        id="statisticPageAlert"
+        class="alert alert-primary d-flex justify-content-between"
+        role="alert"
+    >
+      Вы можете рассчитать свою норму калорий на странице настроек.
+      <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          data-bs-target="#statisticPageAlert"
+          aria-label="Закрыть"
+      />
+    </div>
     <h4>
       Статистика
     </h4>
+
     <div class="row justify-content-around">
       <div class="input-group">
         <span class="input-group-text">
