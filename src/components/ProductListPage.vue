@@ -1,7 +1,18 @@
 <template>
   <div class="content">
     <div class="d-flex justify-content-between align-items-center">
-      <h4>Справочник</h4>
+      <h4>
+        Справочник
+        <button
+            type="button"
+            class="btn"
+            data-bs-toggle="modal"
+            data-bs-target="#addProductModal"
+        >
+          <i class="bi bi-plus-circle"/>
+        </button>
+      </h4>
+      <add-product/>
       <div class="input-group align-content-center search">
         <input
             v-model="stringForSearch"
@@ -43,8 +54,8 @@
             <button
                 class="page-link"
                 aria-label="Предыдущая"
-                @click="prevPage"
                 :disabled="currentPage < 1"
+                @click="prevPage"
             >
               <span aria-hidden="true">&laquo;</span>
             </button>
@@ -129,9 +140,11 @@
 
 <script>
 import {useProductsStore} from "../store/index.ts";
+import AddProduct from "./AddProduct.vue";
 
 export default {
   name: "ProductListPage",
+  components: {AddProduct},
   data() {
     return {
       store: useProductsStore(),
@@ -143,7 +156,7 @@ export default {
   },
   computed: {
     products() {
-      //поиск по строке
+      // если активен поиск по строке, выдаем результат, иначе - полный список
       if (this.stringForSearch && this.stringForSearch !== '') {
         return this.store.products.filter(item => item.name.toLowerCase().includes(this.stringForSearch.toLowerCase())).sort();
       }
@@ -204,6 +217,10 @@ export default {
 </script>
 
 <style scoped>
+i {
+  font-size: 1.4em;
+}
+
 .chosen-page {
   font-weight: bold;
   background-color: #ececec;
@@ -221,7 +238,6 @@ export default {
   width: 15em;
   height: 1em;
 }
-
 
 .form-control {
   width: 25em;

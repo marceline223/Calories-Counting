@@ -11,10 +11,10 @@
         <input
             id="calendar"
             :value="getDateForCalendar('first')"
-            :max="secondDate"
+            :max="getDateForCalendar('second')"
             type="date"
             class="form-control"
-            @input="onInputDate('first', $event)"
+            @input="onInputChosenDates('first', $event)"
         >
       </div>
       <div class="input-group">
@@ -24,31 +24,29 @@
         <input
             id="calendar"
             :value="getDateForCalendar('second')"
-            :min="firstDate"
+            :min="getDateForCalendar('first')"
             type="date"
             class="form-control"
-            @input="onInputDate('second', $event)"
+            @input="onInputChosenDates('second', $event)"
         >
       </div>
     </div>
 
     <h5>Калории</h5>
-    <!-- Столбчатая диаграмма -->
     <div class="chart-container my-3">
       <Bar
           id="123"
           :data="getCaloriesBarData"
-          :options="options"
+          :options="optionsCalories"
       />
     </div>
 
     <h5>Макроэлементы</h5>
-    <!-- Столбчатая диаграмма -->
     <div class="chart-container my-3">
       <Bar
           id="123"
           :data="getMacronutrientsBarData"
-          :options="options"
+          :options="optionsMacronutrients"
       />
     </div>
   </div>
@@ -60,7 +58,7 @@ import {Bar} from 'vue-chartjs';
 import {Chart as Chart, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale} from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import {useRecordsStore} from "../store/index.ts";
-import {mapState} from "pinia";
+import {mapActions, mapState} from "pinia";
 import moment from "moment";
 
 Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, annotationPlugin);
@@ -70,8 +68,6 @@ export default {
   components: {Bar},
   data() {
     return {
-      firstDate: null,
-      secondDate: null,
       recordsStore: useRecordsStore(),
     }
   },
@@ -79,11 +75,24 @@ export default {
     ...mapState(useRecordsStore, {
       recordByDate: "recordByDate",
       normOfCalories: store => store.settings.normOfCalories,
+      firstDate: store => store.chosenDatesForStatistic.first,
+      secondDate: store => store.chosenDatesForStatistic.second
     }),
-    getNormOfCalories() {
-      return this.recordsStore.settings.normOfCalories;
+    optionsMacronutrients() {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          }
+        }
+      }
     },
-    options() {
+    optionsCalories() {
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -100,8 +109,8 @@ export default {
             annotations: {
               normOfCaloriesLine: {
                 type: 'line',
-                mode: 'horizontal',
-                value: this.getNormOfCalories,
+                yMin: this.normOfCalories,
+                yMax: this.normOfCalories,
                 drawTime: 'afterDatasetsDraw',
                 borderColor: 'green',
                 borderWidth: 2,
@@ -117,7 +126,6 @@ export default {
           }
         }
       }
-
     },
     getLabels() {
       if (this.firstDate && this.secondDate) {
@@ -230,28 +238,26 @@ export default {
     }
   },
   methods: {
-    onInputDate(type, e) {
-      // преобразуем данные от календаря в объект
-      switch (type) {
-        case 'first':
-          this.firstDate = moment.utc(e.target.value);
-          break;
-        case 'second':
-          this.secondDate = moment.utc(e.target.value);
-          break;
-      }
+    ...mapActions(useRecordsStore, {
+      setChosenDatesForStatistic: 'setChosenDatesForStatistic'
+    }),
+    onInputChosenDates(type, e) {
+      this.setChosenDatesForStatistic({
+        type: type,
+        date: moment.utc(e.target.value)
+      });
     },
     getDateForCalendar(type) {
-      // календарь использует такой формат даты
+      // т.к. календарь использует другой формат даты
       switch (type) {
         case 'first':
           if (this.firstDate) {
-            return this.firstDate.format('YYYY-MM-DD');
+            return moment(this.firstDate).format('YYYY-MM-DD');
           }
           return null;
         case 'second':
           if (this.secondDate) {
-            return this.secondDate.format('YYYY-MM-DD');
+            return moment(this.secondDate).format('YYYY-MM-DD');
           }
           return null;
       }

@@ -33,7 +33,7 @@
                     :value="countOfProduct.value"
                     type="text"
                     placeholder="Введите количество"
-                    class="form-control amount"
+                    class="form-control"
                     @input="onInputAmountOfProduct"
                 >
                 <span class="input-group-text">

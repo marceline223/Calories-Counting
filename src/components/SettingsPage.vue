@@ -3,15 +3,15 @@
     <h4>Персональные настройки</h4>
     <div class="row">
       <div class="col">
-        <!--   ПОЛ     -->
+        <!--   пол    -->
         <div class="mb-4">
           <h5>Пол</h5>
           <div class="form-check">
             <input
-                v-model="input.sex.value"
+                v-model="input.gender.value"
                 class="form-check-input"
                 type="radio"
-                name="sex"
+                name="gender"
                 value="female"
             >
             <label
@@ -23,10 +23,10 @@
           </div>
           <div class="form-check">
             <input
-                v-model="input.sex.value"
+                v-model="input.gender.value"
                 class="form-check-input"
                 type="radio"
-                name="sex"
+                name="gender"
                 value="male"
             >
             <label
@@ -38,7 +38,7 @@
           </div>
         </div>
 
-        <!--   ВОЗРАСТ     -->
+        <!--   возраст    -->
         <div class="my-4">
           <h5>
             Возраст
@@ -59,7 +59,7 @@
           </div>
         </div>
 
-        <!--   РОСТ     -->
+        <!--   рост    -->
         <div class="my-4">
           <h5>
             Рост
@@ -84,7 +84,7 @@
           </div>
         </div>
 
-        <!--   ВЕС     -->
+        <!--   вес    -->
         <div class="my-4">
           <h5>
             Вес
@@ -108,6 +108,7 @@
           </div>
         </div>
 
+        <!--   активность    -->
         <div class="my-4">
           <h5>
             Степень активности
@@ -167,7 +168,7 @@ export default {
     return {
       recordsStore: useRecordsStore(),
       input: {
-        sex: {
+        gender: {
           value: 'female'
         },
         weight: {
@@ -203,14 +204,13 @@ export default {
         //если формы не валидны, не используем формулу
         return 0;
       }
-      return (this.input.sex.value === 'female') ?
+      return (this.input.gender.value === 'female') ?
           Math.round((10 * this.input.weight.value + 6.25 * this.input.height.value - 5 * this.input.age.value - 161) * this.input.activity.value) :
           Math.round((10 * this.input.weight.value + 6.25 * this.input.height.value - 5 * this.input.age.value + 5) * this.input.activity.value);
     }
   },
   beforeMount() {
-    // this.recordsStore.fetchSettings();
-    this.input.sex.value = this.recordsStore.settings.sex;
+    this.input.gender.value = this.recordsStore.settings.gender;
     this.input.age.value = this.recordsStore.settings.age;
     this.input.activity.value = this.recordsStore.settings.activity;
     this.input.weight.value = this.recordsStore.settings.weight;
@@ -227,10 +227,9 @@ export default {
         weight: this.input.weight.value,
         height: this.input.height.value,
         age: this.input.age.value,
-        sex: this.input.sex.value,
+        gender: this.input.gender.value,
         activity: this.input.activity.value
       });
-      console.log('отправлено');
     },
     onInputForm(type, e) {
       switch (type) {

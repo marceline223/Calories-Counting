@@ -8,6 +8,8 @@
 <script>
   import HeaderComponent from "./components/HeaderComponent.vue";
   import {useProductsStore, useRecordsStore} from "./store/index.ts";
+  import {mapActions} from "pinia";
+
   export default {
     components: {HeaderComponent},
     data() {
@@ -17,12 +19,12 @@
       }
     },
     beforeMount() {
-      this.recordsStore.fetchRecords();
-      this.recordsStore.fetchSettings();
-      this.recordsStore.fetchChosenDate();
-      this.recordsStore.fetchCurrentId();
-
-      this.productsStore.fetchProducts();
+      this.fetchRecordsStore();
+      this.fetchProductsStore();
+    },
+    methods: {
+      ...mapActions(useRecordsStore, ['fetchRecordsStore']),
+      ...mapActions(useProductsStore, ['fetchProductsStore'])
     }
   }
 </script>

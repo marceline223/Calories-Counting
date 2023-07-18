@@ -10,11 +10,15 @@ export const useRecordsStore = defineStore('recordsStore', {
             weight: null,
             height: null,
             age: null,
-            sex: 'female',
+            gender: 'female',
             activity: 1.2
         },
         currentId: 0,
-        chosenDate: null
+        chosenDate: null,
+        chosenDatesForStatistic: {
+            first: null,
+            second: null
+        }
     }),
     getters: {
         recordByDate(state) {
@@ -39,14 +43,20 @@ export const useRecordsStore = defineStore('recordsStore', {
         }
     },
     actions: {
-       fetchRecords() {
+        fetchRecordsStore() {
+          this.fetchRecords();
+          this.fetchCurrentId();
+          this.fetchChosenDatesForStatistic();
+          this.fetchSettings();
+          this.fetchChosenDate();
+        },
+        fetchRecords() {
             const storedRecords = localStorage.getItem('records');
             if (storedRecords) {
                 this.setRecords(JSON.parse(storedRecords));
             } else {
                 localStorage.setItem('records', JSON.stringify(this.records));
             }
-            this.fetchCurrentId();
         },
         fetchSettings() {
             const storedSettings = localStorage.getItem('settings');
@@ -64,17 +74,43 @@ export const useRecordsStore = defineStore('recordsStore', {
                 localStorage.setItem('chosenDate', JSON.stringify(this.chosenDate));
             }
         },
+        fetchChosenDatesForStatistic() {
+            const storedDates = localStorage.getItem('chosenDatesForStatistic');
+            if (storedDates) {
+                this.setChosenDatesForStatistic({
+                    type: 'both',
+                    dates: JSON.parse(storedDates)
+                });
+            } else {
+                localStorage.setItem('chosenDatesForStatistic', JSON.stringify(this.chosenDatesForStatistic));
+            }
+        },
         fetchCurrentId() {
-            const storedId = localStorage.getItem('currentId');
+            const storedId = localStorage.getItem('recordsCurrentId');
             if (storedId) {
                 this.setCurrentId(JSON.parse(storedId));
             } else {
-                localStorage.setItem('currentId', JSON.stringify(this.currentId));
+                localStorage.setItem('recordsCurrentId', JSON.stringify(this.currentId));
             }
         },
         setCurrentId(payload) {
             this.currentId = payload;
-            localStorage.setItem('currentId', JSON.stringify(this.currentId));
+            localStorage.setItem('recordsCurrentId', JSON.stringify(this.currentId));
+        },
+        setChosenDatesForStatistic(payload) {
+            switch (payload.type) {
+                case 'first':
+                    this.chosenDatesForStatistic.first = payload.date
+                    break;
+                case 'second':
+                    this.chosenDatesForStatistic.second = payload.date;
+                    break;
+                default:
+                    this.chosenDatesForStatistic = payload.dates;
+                    break;
+            }
+
+            localStorage.setItem('chosenDatesForStatistic', JSON.stringify(this.chosenDatesForStatistic));
         },
         setChosenDate(payload) {
             this.chosenDate = payload;
@@ -99,7 +135,7 @@ export const useRecordsStore = defineStore('recordsStore', {
             localStorage.setItem('records', JSON.stringify(this.records));
         },
         editMeal(payload) {
-            const record = this.records.find((record) => record.date.isSame(payload.date, 'd'));
+            const record = this.records.find((record) => moment(record.date).isSame(payload.date, 'd'));
             switch (payload.type) {
                 case 'breakfast': {
                     const eatenProduct = record.breakfast.find((product) => product.id === payload.eatenProductId);
@@ -108,13 +144,13 @@ export const useRecordsStore = defineStore('recordsStore', {
                     break;
                 }
                 case 'lunch': {
-                    const eatenProduct = record.lunch.find((eatenProduct)=>eatenProduct.id === payload.eatenProductId)
+                    const eatenProduct = record.lunch.find((eatenProduct) => eatenProduct.id === payload.eatenProductId)
                     eatenProduct.count = payload.count;
                     localStorage.setItem('records', JSON.stringify(this.records));
                     break;
                 }
                 case 'dinner': {
-                    const eatenProduct = record.dinner.find((eatenProduct)=>eatenProduct.id === payload.eatenProductId)
+                    const eatenProduct = record.dinner.find((eatenProduct) => eatenProduct.id === payload.eatenProductId)
                     eatenProduct.count = payload.count;
                     localStorage.setItem('records', JSON.stringify(this.records));
                     break;
@@ -143,7 +179,7 @@ export const useRecordsStore = defineStore('recordsStore', {
                         productId: payload.productId,
                         count: payload.count
                     });
-                    this.setCurrentId(this.currentId+1);
+                    this.setCurrentId(this.currentId + 1);
                     break;
                 }
                 case 'lunch': {
@@ -152,7 +188,7 @@ export const useRecordsStore = defineStore('recordsStore', {
                         productId: payload.productId,
                         count: payload.count
                     });
-                    this.setCurrentId(this.currentId+1);
+                    this.setCurrentId(this.currentId + 1);
                     break;
                 }
                 case 'dinner': {
@@ -161,7 +197,7 @@ export const useRecordsStore = defineStore('recordsStore', {
                         productId: payload.productId,
                         count: payload.count
                     });
-                    this.setCurrentId(this.currentId+1);
+                    this.setCurrentId(this.currentId + 1);
                     break;
                 }
             }
@@ -202,7 +238,31 @@ export const useProductsStore = defineStore('productsStore', {
         currentId: 0
     }),
     actions: {
-        async fetchProducts() {
+        addProduct(payload) {
+            this.products.push({
+                id: this.currentId,
+                name: payload.name,
+                calories: payload.calories,
+                fats: payload.fats,
+                carbs: payload.carbs,
+                proteins: payload.proteins
+            });
+            this.setCurrentId(this.currentId + 1);
+            localStorage.setItem('products', JSON.stringify(this.products));
+        },
+        fetchCurrentId() {
+            const storedId = localStorage.getItem('productsCurrentId');
+            if (storedId) {
+                this.setCurrentId(JSON.parse(storedId));
+            } else {
+                localStorage.setItem('productsCurrentId', JSON.stringify(this.currentId));
+            }
+        },
+        setCurrentId(payload) {
+            this.currentId = payload;
+            localStorage.setItem('productsCurrentId', JSON.stringify(this.currentId));
+        },
+        async fetchProductsStore() {
             const storedProductList = localStorage.getItem('products');
             if (!storedProductList) {
                 //если данных нет в localStorage, загружаем из файла
@@ -210,15 +270,16 @@ export const useProductsStore = defineStore('productsStore', {
                     const response = await fetch('src/assets/food_base.json');
                     const productList = await response.json();
                     this.products = productList;
-                    this.currentId = productList.length;
+                    this.setCurrentId(productList.length);
 
                     localStorage.setItem('products', JSON.stringify(productList));
                 } catch (error) {
-                    console.error('Failed to load products:', error);
+                    console.error('Failed to load products list: ', error);
                 }
             } else {
                 this.products = JSON.parse(storedProductList);
             }
+            this.fetchCurrentId();
         }
     }
 });

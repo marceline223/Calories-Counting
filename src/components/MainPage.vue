@@ -3,7 +3,6 @@
     <div class="col-8 mx-auto d-flex">
       <div class="input-group col">
         <input
-            id="calendar"
             :value="chosenDateForCalendar"
             type="date"
             class="form-control"
@@ -62,9 +61,7 @@ export default {
       recordByDate: "recordByDate"
     }),
     totalCalories() {
-      let sum = 0;
-      this.recordByDate(this.chosenDate).totalCalories.forEach(item => sum += item);
-      return sum;
+      return this.recordByDate(this.chosenDate).totalCalories.reduce((a, b) => a + b, 0);
     },
     chosenDateForCalendar() {
       return moment(this.chosenDate).format('YYYY-MM-DD');
