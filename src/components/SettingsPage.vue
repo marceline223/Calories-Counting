@@ -5,7 +5,7 @@
       <div class="col">
         <!--   пол    -->
         <div class="mb-4">
-          <h5>Пол</h5>
+          <h6>Пол</h6>
           <div class="form-check">
             <input
                 v-model="input.gender.value"
@@ -39,80 +39,46 @@
         </div>
 
         <!--   возраст    -->
-        <div class="my-4">
-          <h5>
-            Возраст
-            <i
-                v-if="input.age.isDirty"
-                class="bi"
-                :class="getIconClass('age')"
-            />
-          </h5>
-          <div class="input-group mb-3">
-            <input
-                :value="input.age.value"
-                type="text"
-                class="form-control"
-                placeholder="Введите свой возраст"
-                @input="onInputForm('age', $event)"
-            >
-          </div>
-        </div>
+        <input-with-validation
+            :input-value="input.age.value"
+            :title="input.age.title"
+            :unit="input.age.unit"
+            :pattern="input.age.pattern"
+            :min-value="input.age.minValue"
+            :max-value="input.age.maxValue"
+            @input-form="onInputForm(input.age, $event)"
+            @check-form="onCheckForm(input.age, $event)"
+        />
 
         <!--   рост    -->
-        <div class="my-4">
-          <h5>
-            Рост
-            <i
-                v-if="input.height.isDirty"
-                class="bi"
-                :class="getIconClass('height')"
-            />
-          </h5>
-          <div class="input-group mb-3">
-            <input
-                :value="input.height.value"
-                type="text"
-                inputmode="numeric"
-                class="form-control"
-                placeholder="Введите свой рост в см"
-                @input="onInputForm('height', $event)"
-            >
-            <span class="input-group-text">
-              см
-            </span>
-          </div>
-        </div>
+        <input-with-validation
+            :input-value="input.height.value"
+            :title="input.height.title"
+            :unit="input.height.unit"
+            :pattern="input.height.pattern"
+            :min-value="input.height.minValue"
+            :max-value="input.height.maxValue"
+            @input-form="onInputForm(input.height, $event)"
+            @check-form="onCheckForm(input.height, $event)"
+        />
 
         <!--   вес    -->
-        <div class="my-4">
-          <h5>
-            Вес
-            <i
-                v-if="input.weight.isDirty"
-                class="bi"
-                :class="getIconClass('weight')"
-            />
-          </h5>
-          <div class="input-group mb-3">
-            <input
-                :value="input.weight.value"
-                type="text"
-                class="form-control"
-                placeholder="Введите свой вес в кг"
-                @input="onInputForm('weight', $event)"
-            >
-            <span class="input-group-text">
-              кг
-            </span>
-          </div>
-        </div>
+        <input-with-validation
+            :input-value="input.weight.value"
+            :title="input.weight.title"
+            :unit="input.weight.unit"
+            :pattern="input.weight.pattern"
+            :min-value="input.weight.minValue"
+            :max-value="input.weight.maxValue"
+            @input-form="onInputForm(input.weight, $event)"
+            @check-form="onCheckForm(input.weight, $event)"
+        />
 
         <!--   активность    -->
         <div class="my-4">
-          <h5>
-            Степень активности
-          </h5>
+          <h6>
+            {{ input.activity.title }}
+          </h6>
           <div class="input-group mb-3">
             <select
                 v-model="input.activity.value"
@@ -140,10 +106,11 @@
           </div>
         </div>
       </div>
+
       <div class="col">
-        <h5>
+        <h6>
           Норма
-        </h5>
+        </h6>
         {{ normOfCalories }} кКал/день
       </div>
     </div>
@@ -161,35 +128,48 @@
 <script>
 import {useRecordsStore} from "../store/index.ts";
 import {mapActions} from "pinia";
+import InputWithValidation from "./InputWithValidation.vue";
 
 export default {
   name: "SettingsPage",
+  components: {InputWithValidation},
   data() {
     return {
       recordsStore: useRecordsStore(),
       input: {
         gender: {
+          title: 'Пол',
           value: 'female'
         },
         weight: {
+          title: 'Вес',
+          unit: 'кг',
           value: null,
-          pattern: /^[0-9]+$/,
-          isDirty: false,
+          pattern: /([0-9]*[.])?[0-9]+/,
+          minValue: 0,
+          maxValue: null,
           isValid: false
         },
         height: {
+          title: 'Рост',
+          unit: 'см',
           value: null,
-          pattern: /^[0-9]+$/,
-          isDirty: false,
+          pattern: /([0-9]*[.])?[0-9]+/,
+          minValue: 0,
+          maxValue: 300,
           isValid: false
         },
         age: {
+          title: 'Возраст',
+          unit: null,
           value: null,
           pattern: /^[0-9]+$/,
-          isDirty: false,
+          minValue: 0,
+          maxValue: 200,
           isValid: false
         },
         activity: {
+          title: 'Степень активности',
           value: 1.2
         }
       }
@@ -215,9 +195,6 @@ export default {
     this.input.activity.value = this.recordsStore.settings.activity;
     this.input.weight.value = this.recordsStore.settings.weight;
     this.input.height.value = this.recordsStore.settings.height;
-    this.input.age.isValid = this.input.age.pattern.test(this.input.age.value) && (this.input.age.value < 200);
-    this.input.height.isValid = this.input.height.pattern.test(this.input.height.value) && (this.input.height.value < 300);
-    this.input.weight.isValid = this.input.weight.pattern.test(this.input.weight.value);
   },
   methods: {
     saveSettings() {
@@ -231,34 +208,11 @@ export default {
         activity: this.input.activity.value
       });
     },
-    onInputForm(type, e) {
-      switch (type) {
-        case 'age':
-          this.input.age.value = e.target.value;
-          this.input.age.isValid = this.input.age.pattern.test(this.input.age.value) && (this.input.age.value < 200) && (this.input.age.value > 0);
-          this.input.age.isDirty = true;
-          break;
-        case 'height':
-          this.input.height.value = e.target.value;
-          this.input.height.isValid = this.input.height.pattern.test(this.input.height.value) && (this.input.height.value < 300) && (this.input.height.value > 0);
-          this.input.height.isDirty = true;
-          break;
-        case 'weight':
-          this.input.weight.value = e.target.value;
-          this.input.weight.isValid = this.input.weight.pattern.test(this.input.weight.value) && (this.input.weight.value > 0);
-          this.input.weight.isDirty = true;
-          break;
-      }
+    onInputForm(inputRef, e) {
+      inputRef.value = e.inputValue;
     },
-    getIconClass(type) {
-      switch (type) {
-        case 'age':
-          return this.input.age.isValid ? 'bi-check-circle text-success' : 'bi-exclamation-circle text-danger';
-        case 'height':
-          return this.input.height.isValid ? 'bi-check-circle text-success' : 'bi-exclamation-circle text-danger';
-        case 'weight':
-          return this.input.weight.isValid ? 'bi-check-circle text-success' : 'bi-exclamation-circle text-danger';
-      }
+    onCheckForm(inputRef, e) {
+      inputRef.isValid = e.isValid;
     },
     ...mapActions(useRecordsStore, {
       setSettings: 'setSettings'
