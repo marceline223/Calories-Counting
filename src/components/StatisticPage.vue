@@ -51,7 +51,6 @@
     <h5>Калории</h5>
     <div class="chart-container my-3">
       <Bar
-          id="123"
           :data="getCaloriesBarData"
           :options="optionsCalories"
       />
@@ -60,7 +59,6 @@
     <h5>Макроэлементы</h5>
     <div class="chart-container my-3">
       <Bar
-          id="123"
           :data="getMacronutrientsBarData"
           :options="optionsMacronutrients"
       />
