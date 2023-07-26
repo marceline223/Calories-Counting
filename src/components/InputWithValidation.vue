@@ -5,7 +5,7 @@
       <i
           v-if="isDirty"
           class="bi"
-          :class="getIconClass"
+          :class="iconClass"
       />
     </h6>
     <div class="input-group mb-3">
@@ -67,7 +67,7 @@ emits: ['inputForm', 'checkForm'],
           (this.minValue ? this.newValue >= this.minValue : true) &&
           (this.maxValue ? this.newValue <= this.maxValue : true);
     },
-    getIconClass() {
+    iconClass() {
       return this.isValid ? 'bi-check-circle text-success' : 'bi-exclamation-circle text-danger';
     }
   },

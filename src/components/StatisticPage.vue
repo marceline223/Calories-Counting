@@ -41,7 +41,7 @@
     <h5>Калории</h5>
     <div class="chart-container my-3">
       <Bar
-          :data="getCaloriesBarData"
+          :data="caloriesBarData"
           :options="optionsCalories"
       />
     </div>
@@ -49,7 +49,7 @@
     <h5>Макроэлементы</h5>
     <div class="chart-container my-3">
       <Bar
-          :data="getMacronutrientsBarData"
+          :data="macronutrientsBarData"
           :options="optionsMacronutrients"
       />
     </div>
@@ -132,7 +132,7 @@ export default {
         }
       }
     },
-    getLabels() {
+    chartLabels() {
       if (this.firstDate && this.secondDate) {
         const result = [];
 
@@ -145,7 +145,7 @@ export default {
       }
       return [];
     },
-    getCaloriesDataSet() {
+    caloriesDataSet() {
       const datasets = [];
       if (this.firstDate && this.secondDate) {
         const tempData = {
@@ -187,7 +187,7 @@ export default {
       }
       return [];
     },
-    getMacronutrientsDataSet() {
+    macronutrientsDataSet() {
       const datasets = [];
       if (this.firstDate && this.secondDate) {
         const tempData = {
@@ -229,16 +229,16 @@ export default {
       }
       return [];
     },
-    getCaloriesBarData() {
+    caloriesBarData() {
       return {
-        labels: this.getLabels,
-        datasets: this.getCaloriesDataSet
+        labels: this.chartLabels,
+        datasets: this.caloriesDataSet
       }
     },
-    getMacronutrientsBarData() {
+    macronutrientsBarData() {
       return {
-        labels: this.getLabels,
-        datasets: this.getMacronutrientsDataSet
+        labels: this.chartLabels,
+        datasets: this.macronutrientsDataSet
       }
     }
   },

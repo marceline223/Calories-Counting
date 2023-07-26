@@ -118,7 +118,7 @@
     <button
         class="btn btn-labeled btn-success"
         :disabled="!checkForms"
-        @click="saveSettings"
+        @click="onClickSaveSettings"
     >
       Сохранить
     </button>
@@ -197,7 +197,7 @@ export default {
     this.input.height.value = this.recordsStore.settings.height;
   },
   methods: {
-    saveSettings() {
+    onClickSaveSettings() {
       //отправка в pinia
       this.recordsStore.setSettings({
         normOfCalories: this.normOfCalories,

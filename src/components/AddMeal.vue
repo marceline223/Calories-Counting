@@ -8,7 +8,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title align-content-center mt-1">
-            Добавить запись: {{ mealName }} {{ getFormattedDate }}
+            Добавить запись: {{ mealName }} {{ formattedDate }}
           </h5>
           <button
               type="button"
@@ -27,22 +27,24 @@
                 </span>
               </div>
 
-              <!-- ввод количества -->
-              <div class="input-group amount">
-                <input
-                    :value="countOfProduct.value"
-                    type="text"
-                    placeholder="Введите количество"
-                    class="form-control"
-                    @input="onInputAmountOfProduct"
-                >
-                <span class="input-group-text">
+              <div class="d-flex">
+                <!-- ввод количества -->
+                <div class="input-group amount">
+                  <input
+                      :value="countOfProduct.value"
+                      type="text"
+                      placeholder="Введите количество"
+                      class="form-control"
+                      @input="onInputCountOfProduct"
+                  >
+                  <span class="input-group-text">
                 г
                 </span>
+                </div>
                 <i
                     v-if="countOfProduct.isDirty"
                     class="bi mx-3 my-auto"
-                    :class="getIconClass"
+                    :class="iconClass"
                 />
               </div>
             </div>
@@ -108,7 +110,7 @@
                       class="page-link"
                       aria-label="Предыдущая"
                       :disabled="currentPage < 1"
-                      @click="prevPage"
+                      @click="onClickPrevPage"
                   >
                     <span aria-hidden="true">&laquo;</span>
                   </button>
@@ -128,10 +130,10 @@
                   >
                     <a
                         class="page-link"
-                        :class="pageNumberStyleClass( getPagesForNavigation.start + i - 1)"
-                        @click="currentPage = getPagesForNavigation.start + i - 1"
+                        :class="getPageNumberStyleClass( pagesForNavigation.start + i - 1)"
+                        @click="currentPage = pagesForNavigation.start + i - 1"
                     >
-                      {{ getPagesForNavigation.start + i }}
+                      {{ pagesForNavigation.start + i }}
                     </a>
                   </li>
                 </div>
@@ -147,10 +149,10 @@
                   >
                     <a
                         class="page-link"
-                        :class="pageNumberStyleClass( getPagesForNavigation.start + i - 1)"
-                        @click="currentPage = getPagesForNavigation.start + i - 1"
+                        :class="getPageNumberStyleClass( pagesForNavigation.start + i - 1)"
+                        @click="currentPage = pagesForNavigation.start + i - 1"
                     >
-                      {{ getPagesForNavigation.start + i }}
+                      {{ pagesForNavigation.start + i }}
                     </a>
                   </li>
                 </div>
@@ -161,7 +163,7 @@
                       class="page-link"
                       aria-label="Следующая"
                       :disabled="currentPage > pageCount - 2"
-                      @click="nextPage"
+                      @click="onClickNextPage"
                   >
                     <span aria-hidden="true">&raquo;</span>
                   </button>
@@ -182,7 +184,7 @@
               >
               <button
                   class="btn btn-light btn-sm"
-                  @click="goToChosenPage"
+                  @click="onClickGoToChosenPage"
               >
                 ✓
               </button>
@@ -194,7 +196,7 @@
               type="button"
               class="btn btn-success"
               :disabled="!countOfProduct.isValid"
-              @click="addToMeal"
+              @click="onClickAddToMeal"
           >
             Добавить
           </button>
@@ -238,11 +240,11 @@ export default {
       chosenDate: store => store.chosenDate
     }),
     ...mapState(useProductsStore, {
-      getProductNameById: (store) => {
+      productNameById: (store) => {
         return (id) => store.products.find((product) => product.id === id).name;
       }
     }),
-    getFormattedDate() {
+    formattedDate() {
       return moment(this.chosenDate).format("DD.MM.YYYY");
     },
     products() {
@@ -276,14 +278,14 @@ export default {
     },
     chosenProductName() {
       if (this.chosenProductId !== null) {
-        return this.getProductNameById(this.chosenProductId);
+        return this.productNameById(this.chosenProductId);
       }
       return null;
     },
-    getIconClass() {
+    iconClass() {
       return this.countOfProduct.isValid ? 'bi-check-circle text-success' : 'bi-exclamation-circle text-danger';
     },
-    getPagesForNavigation() {
+    pagesForNavigation() {
       if (this.currentPage < 2) {
         return {
           start: 0
@@ -300,22 +302,22 @@ export default {
     }
   },
   methods: {
-    nextPage() {
-      if (this.currentPage < this.pageCount - 1) {
-        this.currentPage++;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage--;
-      }
-    },
-    pageNumberStyleClass(pageNumber) {
+    getPageNumberStyleClass(pageNumber) {
       if (pageNumber === this.currentPage) {
         return 'chosen-page'
       }
     },
-    goToChosenPage() {
+    onClickNextPage() {
+      if (this.currentPage < this.pageCount - 1) {
+        this.currentPage++;
+      }
+    },
+    onClickPrevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+      }
+    },
+    onClickGoToChosenPage() {
       if (this.chosenPageInput > 0 && this.chosenPageInput <= this.pageCount) {
         this.currentPage = this.chosenPageInput - 1;
       } else if (this.chosenPageInput <= 0) {
@@ -324,7 +326,7 @@ export default {
         this.currentPage = this.pageCount - 1;
       }
     },
-    addToMeal() {
+    onClickAddToMeal() {
       this.recordsStore.addToMeal({
         date: this.chosenDate,
         type: this.mealType,
@@ -332,10 +334,7 @@ export default {
         count: this.countOfProduct.value
       });
     },
-    onInputDate(e) {
-      this.chosenDate = moment(e.target.value);
-    },
-    onInputAmountOfProduct(e) {
+    onInputCountOfProduct(e) {
       this.countOfProduct.value = e.target.value;
       this.countOfProduct.isDirty = true;
       const pattern = /([0-9]*[.])?[0-9]+/;

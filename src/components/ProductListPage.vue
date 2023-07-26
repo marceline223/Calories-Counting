@@ -78,7 +78,7 @@
                   :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
                   @click="currentPage = getPagesForNavigation().start + i - 1"
               >
-                {{ getPagesForNavigation().start + i }}
+                {{ pagesForNavigation().start + i }}
               </a>
             </li>
           </div>
@@ -97,7 +97,7 @@
                   :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
                   @click="currentPage = getPagesForNavigation().start + i - 1"
               >
-                {{ getPagesForNavigation().start + i }}
+                {{ pagesForNavigation().start + i }}
               </a>
             </li>
           </div>

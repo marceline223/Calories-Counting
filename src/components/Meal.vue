@@ -6,7 +6,7 @@
       </h6>
       <div>
           <span>
-          {{ getMealInfo.total.calories.toFixed(2) }} кКал
+          {{ mealInfo.total.calories.toFixed(2) }} кКал
           </span>
         <button
             type="button"
@@ -25,7 +25,7 @@
 
     <div class="card-body">
       <table
-          v-if="getMeal.length > 0"
+          v-if="mealRef.length > 0"
           class="table table-sm"
       >
         <thead>
@@ -52,7 +52,7 @@
         </thead>
         <tbody>
         <tr
-            v-for="meal of getMealInfo.meals"
+            v-for="meal of mealInfo.meals"
             :key="meal.id"
         >
           <td>{{ meal.name }}</td>
@@ -79,7 +79,7 @@
                 type="button"
                 class="btn btn-light p-0"
                 :disabled="!isNewCountValid"
-                @click="saveCount(meal.id)"
+                @click="onClickSaveCount(meal.id)"
             >
               <i class="bi bi-check-circle text-success"/>
             </button>
@@ -89,7 +89,7 @@
                 v-else
                 type="button"
                 class="btn btn-light p-0"
-                @click="editCount(meal.id)"
+                @click="onClickEditCount(meal.id)"
             >
               <i class="bi bi-pencil"/>
             </button>
@@ -100,7 +100,7 @@
                 v-if="productIdForEditing === meal.id"
                 type="button"
                 class="btn btn-light p-0"
-                @click="cancelChanges"
+                @click="onClickCancelChanges"
             >
               <i class="bi bi-arrow-counterclockwise"/>
             </button>
@@ -110,7 +110,7 @@
                 v-else
                 type="button"
                 class="btn btn-light p-0"
-                @click="onDeleteFromMeal(meal.id)"
+                @click="onClickDeleteFromMeal(meal.id)"
             >
               <i class="bi bi-x text-danger"/>
             </button>
@@ -166,7 +166,7 @@ export default {
           return 'Не найдено';
       }
     },
-    getMeal() {
+    mealRef() {
       switch (this.mealType) {
         case 'breakfast':
           return this.recordsStore.recordByDate(this.chosenDate).breakfast;
@@ -178,8 +178,8 @@ export default {
           return null;
       }
     },
-    getMealInfo() {
-      const eatenProducts = this.getMeal;
+    mealInfo() {
+      const eatenProducts = this.mealRef;
       const productsInfo = [];
       const total = {
         calories: 0,
@@ -239,21 +239,25 @@ export default {
     }
   },
   methods: {
-    onDeleteFromMeal(mealIndex) {
+    ...mapActions(useRecordsStore, {
+      editMeal: "editMeal",
+      setTotal: "setTotal"
+    }),
+    onClickDeleteFromMeal(mealIndex) {
       this.recordsStore.deleteFromMeal({
         type: this.mealType,
         id: mealIndex,
         date: this.chosenDate
       });
     },
-    editCount(productIdForEditing) {
+    onClickEditCount(productIdForEditing) {
       this.productIdForEditing = productIdForEditing;
     },
-    cancelChanges() {
+    onClickCancelChanges() {
       this.newCount = null;
       this.productIdForEditing = null;
     },
-    saveCount() {
+    onClickSaveCount() {
       this.editMeal({
         type: this.mealType,
         eatenProductId: this.productIdForEditing,
@@ -261,11 +265,7 @@ export default {
         count: this.newCount
       });
       this.productIdForEditing = null;
-    },
-    ...mapActions(useRecordsStore, {
-      editMeal: "editMeal",
-      setTotal: "setTotal"
-    })
+    }
   }
 }
 </script>
