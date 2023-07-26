@@ -55,7 +55,7 @@
                 class="page-link"
                 aria-label="Предыдущая"
                 :disabled="currentPage < 1"
-                @click="prevPage"
+                @click="onClickPrevPage"
             >
               <span aria-hidden="true">&laquo;</span>
             </button>
@@ -75,10 +75,10 @@
             >
               <a
                   class="page-link"
-                  :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
+                  :class="getPageNumberStyleClass( getPagesForNavigation().start + i - 1)"
                   @click="currentPage = getPagesForNavigation().start + i - 1"
               >
-                {{ pagesForNavigation().start + i }}
+                {{ getPagesForNavigation().start + i }}
               </a>
             </li>
           </div>
@@ -94,7 +94,7 @@
             >
               <a
                   class="page-link"
-                  :class="pageNumberStyleClass( getPagesForNavigation().start + i - 1)"
+                  :class="getPageNumberStyleClass( getPagesForNavigation().start + i - 1)"
                   @click="currentPage = getPagesForNavigation().start + i - 1"
               >
                 {{ pagesForNavigation().start + i }}
@@ -109,7 +109,7 @@
                 class="page-link"
                 aria-label="Следующая"
                 :disabled="currentPage > pageCount - 2"
-                @click="nextPage"
+                @click="onClickNextPage"
             >
               <span aria-hidden="true">&raquo;</span>
             </button>
@@ -123,13 +123,14 @@
         </span>
         <input
             v-model="chosenPageInput"
-            type="number"
+            type="text"
             class="form-control form-control-sm"
             inputmode="numeric"
         >
         <button
             class="btn btn-light btn-sm"
-            @click="goToChosenPage"
+            :disabled="!isChosenPageValid"
+            @click="onClickGoToChosenPage"
         >
           ✓
         </button>
@@ -155,6 +156,10 @@ export default {
     }
   },
   computed: {
+    isChosenPageValid() {
+      const pattern = /^[0-9]+$/;
+      return pattern.test(this.chosenPageInput);
+    },
     products() {
       // если активен поиск по строке, выдаем результат, иначе - полный список
       if (this.stringForSearch && this.stringForSearch !== '') {
@@ -173,28 +178,9 @@ export default {
     }
   },
   methods: {
-    nextPage() {
-      if (this.currentPage < this.pageCount - 1) {
-        this.currentPage++;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage--;
-      }
-    },
-    pageNumberStyleClass(pageNumber) {
+    getPageNumberStyleClass(pageNumber) {
       if (pageNumber === this.currentPage) {
         return 'chosen-page'
-      }
-    },
-    goToChosenPage() {
-      if (this.chosenPageInput > 0 && this.chosenPageInput <= this.pageCount) {
-        this.currentPage = this.chosenPageInput - 1;
-      } else if (this.chosenPageInput <= 0) {
-        this.currentPage = 0;
-      } else {
-        this.currentPage = this.pageCount - 1;
       }
     },
     getPagesForNavigation() {
@@ -210,6 +196,25 @@ export default {
         return {
           start: this.currentPage - 2
         }
+      }
+    },
+    onClickNextPage() {
+      if (this.currentPage < this.pageCount - 1) {
+        this.currentPage++;
+      }
+    },
+    onClickPrevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+      }
+    },
+    onClickGoToChosenPage() {
+      if (this.chosenPageInput > 0 && this.chosenPageInput <= this.pageCount) {
+        this.currentPage = this.chosenPageInput - 1;
+      } else if (this.chosenPageInput <= 0) {
+        this.currentPage = 0;
+      } else {
+        this.currentPage = this.pageCount - 1;
       }
     }
   }

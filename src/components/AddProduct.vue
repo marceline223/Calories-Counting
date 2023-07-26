@@ -152,7 +152,7 @@ export default {
     checkForms() {
       return (this.input.calories.isValid && this.input.fats.isValid &&
           this.input.carbs.isValid && this.input.proteins.isValid && this.input.name.value);
-    },
+    }
   },
   methods: {
     ...mapActions(useProductsStore, {

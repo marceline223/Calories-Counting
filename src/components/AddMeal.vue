@@ -178,12 +178,13 @@
               </span>
               <input
                   v-model="chosenPageInput"
-                  type="number"
+                  type="text"
                   class="form-control form-control-sm"
                   inputmode="numeric"
               >
               <button
                   class="btn btn-light btn-sm"
+                  :disabled="!isChosenPageValid"
                   @click="onClickGoToChosenPage"
               >
                 ✓
@@ -244,6 +245,10 @@ export default {
         return (id) => store.products.find((product) => product.id === id).name;
       }
     }),
+    isChosenPageValid() {
+      const pattern = /^[0-9]+$/;
+      return pattern.test(this.chosenPageInput);
+    },
     formattedDate() {
       return moment(this.chosenDate).format("DD.MM.YYYY");
     },
