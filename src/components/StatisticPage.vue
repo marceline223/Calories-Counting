@@ -1,20 +1,10 @@
 <template>
   <div class="content">
-    <div
+    <alert-component
         v-if="!normOfCalories"
-        id="statisticPageAlert"
-        class="alert alert-primary d-flex justify-content-between"
-        role="alert"
-    >
-      Вы можете рассчитать свою норму калорий на странице настроек.
-      <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          data-bs-target="#statisticPageAlert"
-          aria-label="Закрыть"
-      />
-    </div>
+        id-alert="statisticPageAlert"
+    />
+
     <h4>
       Статистика
     </h4>
@@ -74,12 +64,13 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import {useRecordsStore} from "../store/index.ts";
 import {mapActions, mapState} from "pinia";
 import moment from "moment";
+import AlertComponent from "./AlertComponent.vue";
 
 Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, annotationPlugin);
 
 export default {
   name: "StatisticPage",
-  components: {Bar},
+  components: {Bar, AlertComponent},
   data() {
     return {
       recordsStore: useRecordsStore(),

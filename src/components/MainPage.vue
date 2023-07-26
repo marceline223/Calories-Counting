@@ -1,20 +1,10 @@
 <template>
   <div class="content">
-    <div
+    <alert-component
         v-if="!normOfCalories"
-        id="mainPageAlert"
-        class="alert alert-primary d-flex justify-content-between"
-        role="alert"
-    >
-        Вы можете рассчитать свою норму калорий на странице настроек.
-      <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          data-bs-target="#mainPageAlert"
-          aria-label="Закрыть"
-      />
-    </div>
+        id-alert="mainPageAlert"
+    />
+
     <div class="col-8 mx-auto d-flex">
       <div class="input-group col">
         <input
@@ -57,12 +47,15 @@
 <script>
 import {useRecordsStore, useProductsStore} from "../store/index.ts";
 import {mapActions, mapState} from "pinia";
+
 import MealComponent from "./Meal.vue";
+import AlertComponent from "./AlertComponent.vue";
+
 import moment from "moment";
 
 export default {
   name: "MainPage",
-  components: {MealComponent},
+  components: {MealComponent, AlertComponent},
   data() {
     return {
       recordsStore: useRecordsStore(),
