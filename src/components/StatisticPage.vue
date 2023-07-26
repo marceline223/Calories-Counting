@@ -10,32 +10,18 @@
     </h4>
 
     <div class="row justify-content-around">
-      <div class="input-group">
-        <span class="input-group-text">
-              с
-        </span>
-        <input
-            id="calendar"
-            :value="getDateForCalendar('first')"
-            :max="getDateForCalendar('second')"
-            type="date"
-            class="form-control"
-            @input="onInputChosenDates('first', $event)"
-        >
-      </div>
-      <div class="input-group">
-        <span class="input-group-text">
-              по
-        </span>
-        <input
-            id="calendar"
-            :value="getDateForCalendar('second')"
-            :min="getDateForCalendar('first')"
-            type="date"
-            class="form-control"
-            @input="onInputChosenDates('second', $event)"
-        >
-      </div>
+      <input-calendar
+          prefix="с"
+          :value="firstDate"
+          :max-value="secondDate"
+          @input-date="onInputChosenDateForStatistic('first', $event)"
+      />
+      <input-calendar
+          prefix="по"
+          :value="secondDate"
+          :min-value="firstDate"
+          @input-date="onInputChosenDateForStatistic('second', $event)"
+      />
     </div>
 
     <h5>Калории</h5>
@@ -65,12 +51,13 @@ import {useRecordsStore} from "../store/index.ts";
 import {mapActions, mapState} from "pinia";
 import moment from "moment";
 import AlertComponent from "./AlertComponent.vue";
+import InputCalendar from "./InputCalendar.vue";
 
 Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, annotationPlugin);
 
 export default {
   name: "StatisticPage",
-  components: {Bar, AlertComponent},
+  components: {InputCalendar, Bar, AlertComponent},
   data() {
     return {
       recordsStore: useRecordsStore(),
@@ -246,26 +233,11 @@ export default {
     ...mapActions(useRecordsStore, {
       setChosenDatesForStatistic: 'setChosenDatesForStatistic'
     }),
-    onInputChosenDates(type, e) {
+    onInputChosenDateForStatistic(type, e) {
       this.setChosenDatesForStatistic({
         type: type,
-        date: moment.utc(e.target.value)
+        date: e.date
       });
-    },
-    getDateForCalendar(type) {
-      // т.к. календарь использует другой формат даты
-      switch (type) {
-        case 'first':
-          if (this.firstDate) {
-            return moment(this.firstDate).format('YYYY-MM-DD');
-          }
-          return null;
-        case 'second':
-          if (this.secondDate) {
-            return moment(this.secondDate).format('YYYY-MM-DD');
-          }
-          return null;
-      }
     }
   }
 }

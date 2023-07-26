@@ -6,14 +6,11 @@
     />
 
     <div class="col-8 mx-auto d-flex">
-      <div class="input-group col">
-        <input
-            :value="chosenDateForCalendar"
-            type="date"
-            class="form-control"
-            @input="onInputChosenDate"
-        >
-      </div>
+      <input-calendar
+          :value="chosenDate"
+          @input-date="onInputChosenDate($event)"
+      />
+
       <div class="col">
         <div class="text-end">
           Суточная норма калорий: {{ normOfCalories }} кКал
@@ -51,11 +48,12 @@ import {mapActions, mapState} from "pinia";
 import MealComponent from "./Meal.vue";
 import AlertComponent from "./AlertComponent.vue";
 
-import moment from "moment";
+import moment from "moment/moment.js";
+import InputCalendar from "./InputCalendar.vue";
 
 export default {
   name: "MainPage",
-  components: {MealComponent, AlertComponent},
+  components: {InputCalendar, MealComponent, AlertComponent},
   data() {
     return {
       recordsStore: useRecordsStore(),
@@ -71,8 +69,8 @@ export default {
     totalCalories() {
       return this.recordByDate(this.chosenDate).totalCalories.reduce((a, b) => a + b, 0);
     },
-    chosenDateForCalendar() {
-      return moment(this.chosenDate).format('YYYY-MM-DD');
+    chosenDateObj() {
+      return moment(this.chosenDate);
     }
   },
   methods: {
@@ -80,7 +78,7 @@ export default {
       setChosenDate: "setChosenDate"
     }),
     onInputChosenDate(e) {
-      this.setChosenDate(moment.utc(e.target.value));
+      this.setChosenDate(e.date);
     }
   }
 }

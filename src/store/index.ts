@@ -100,21 +100,22 @@ export const useRecordsStore = defineStore('recordsStore', {
         setChosenDatesForStatistic(payload) {
             switch (payload.type) {
                 case 'first':
-                    this.chosenDatesForStatistic.first = payload.date
+                    this.chosenDatesForStatistic.first = moment(payload.date)
                     break;
                 case 'second':
-                    this.chosenDatesForStatistic.second = payload.date;
+                    this.chosenDatesForStatistic.second = moment(payload.date);
                     break;
                 default:
-                    this.chosenDatesForStatistic = payload.dates;
+                    this.chosenDatesForStatistic.first = moment(payload.dates.first);
+                    this.chosenDatesForStatistic.second = moment(payload.dates.second);
                     break;
             }
 
             localStorage.setItem('chosenDatesForStatistic', JSON.stringify(this.chosenDatesForStatistic));
         },
         setChosenDate(payload) {
-            this.chosenDate = payload;
-            localStorage.setItem('chosenDate', JSON.stringify(this.chosenDate));
+            this.chosenDate = moment(payload);
+            localStorage.setItem('chosenDate', JSON.stringify(moment(this.chosenDate)));
         },
         setRecords(payload) {
             this.records = payload;
