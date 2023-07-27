@@ -54,7 +54,7 @@ export default {
       default: null
     }
   },
-emits: ['inputForm', 'checkForm'],
+  emits: ['inputForm', 'checkForm'],
   data() {
     return {
       newValue: this.inputValue,

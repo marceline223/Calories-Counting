@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import {useProductsStore} from "../store/index.ts";
 import AddProduct from "./AddProduct.vue";
 import ProductListTable from "./ProductListTable.vue";
 

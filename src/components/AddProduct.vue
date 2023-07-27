@@ -23,7 +23,7 @@
           <h5 class="heading-with-margin">
             {{ input.name.title }}
           </h5>
-          <div class="input-group mb-3">
+          <div class="input-group small-input-group mb-3">
             <input
                 v-model="input.name.value"
                 type="text"
@@ -180,9 +180,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.input-group {
-  width: 20em;
-}
-</style>

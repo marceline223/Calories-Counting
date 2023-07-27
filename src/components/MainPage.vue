@@ -47,8 +47,6 @@ import {mapActions, mapState} from "pinia";
 
 import MealComponent from "./Meal.vue";
 import AlertComponent from "./AlertComponent.vue";
-
-import moment from "moment/moment.js";
 import InputCalendar from "./InputCalendar.vue";
 
 export default {
@@ -68,9 +66,6 @@ export default {
     }),
     totalCalories() {
       return this.recordByDate(this.chosenDate).totalCalories.reduce((a, b) => a + b, 0);
-    },
-    chosenDateObj() {
-      return moment(this.chosenDate);
     }
   },
   methods: {

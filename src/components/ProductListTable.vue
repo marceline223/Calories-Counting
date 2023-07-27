@@ -46,7 +46,7 @@
           <!--переход на предыдущую страницу-->
           <li class="page-item">
             <button
-                class="page-link"
+                class="page-link black-page-link"
                 aria-label="Предыдущая"
                 :disabled="currentPage < 1"
                 @click="onClickPrevPage"
@@ -68,7 +68,7 @@
                 class="page-item"
             >
               <a
-                  class="page-link"
+                  class="page-link black-page-link"
                   :class="getPageNumberStyleClass(pagesForNavigation.start + i - 1)"
                   @click="currentPage = pagesForNavigation.start + i - 1"
               >
@@ -87,7 +87,7 @@
                 class="page-item"
             >
               <a
-                  class="page-link"
+                  class="page-link black-page-link"
                   :class="getPageNumberStyleClass(pagesForNavigation.start + i - 1)"
                   @click="currentPage = pagesForNavigation.start + i - 1"
               >
@@ -100,7 +100,7 @@
           <!--переход на следующую страницу-->
           <li class="page-item">
             <button
-                class="page-link"
+                class="page-link black-page-link"
                 aria-label="Следующая"
                 :disabled="currentPage > pageCount - 2"
                 @click="onClickNextPage"
@@ -122,7 +122,7 @@
             inputmode="numeric"
         >
         <button
-            class="btn btn-light btn-sm"
+            class="btn btn-light light-bordered btn-sm"
             :disabled="!isChosenPageValid"
             @click="onClickGoToChosenPage"
         >
@@ -243,7 +243,7 @@ emits: ['changeChosenProductId'],
   background-color: #ececec;
 }
 
-.page-link, .page-link:hover {
+.black-page-link, .black-page-link:hover {
   color: black;
 }
 
@@ -252,7 +252,7 @@ emits: ['changeChosenProductId'],
   height: 1em;
 }
 
-.btn-light {
+.light-bordered {
   border-color: #e1e1e1;
 }
 </style>

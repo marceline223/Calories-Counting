@@ -1,10 +1,10 @@
 import {defineStore} from 'pinia'
-import {ProductInfo} from "./store-types";
+import {DayRecord, ProductInfo} from "./store-types";
 import moment from "moment";
 
 export const useRecordsStore = defineStore('recordsStore', {
     state: () => ({
-        records: [],
+        records: [] as DayRecord,
         settings: {
             normOfCalories: 0,
             weight: null,

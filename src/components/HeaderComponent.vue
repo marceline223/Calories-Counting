@@ -43,7 +43,6 @@
 
 <script>
 
-
 export default {
   name: "HeaderComponent"
 }

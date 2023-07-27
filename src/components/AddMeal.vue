@@ -21,7 +21,9 @@
           <div class="row justify-content-between">
             <div class="col mb-4">
               <div class="d-flex align-items-center">
-                <h6 class="heading-with-margin">Продукт: </h6>
+                <h6 class="heading-with-margin">
+                  Продукт:
+                </h6>
                 <span class="mx-2">
                    {{ chosenProductName || "Выберите продукт" }}
                 </span>
@@ -38,8 +40,8 @@
                       @input="onInputCountOfProduct"
                   >
                   <span class="input-group-text">
-                г
-                </span>
+                    г
+                  </span>
                 </div>
                 <i
                     v-if="countOfProduct.isDirty"
@@ -59,146 +61,12 @@
               >
             </div>
           </div>
-
-          <!-- таблица -->
+          <!-- таблица с пагинацией -->
           <product-list-table
               :is-choosing-product-needed="true"
               :string-for-search="stringForSearch"
               @change-chosen-product-id="onChangeChosenProductId($event)"
           />
-
-
-<!--          <table class="table table-bordered">-->
-<!--            <thead>-->
-<!--            <tr>-->
-<!--              <th>Название</th>-->
-<!--              <th>Энергетическая ценность (на 100 г)</th>-->
-<!--              <th>Б</th>-->
-<!--              <th>Ж</th>-->
-<!--              <th>У</th>-->
-<!--              <th/>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--            <tr-->
-<!--                v-for="product in productsForPage"-->
-<!--                :key="product.id"-->
-<!--            >-->
-<!--              <td>{{ product.name }}</td>-->
-<!--              <td>{{ product.calories }}</td>-->
-<!--              <td>{{ product.proteins }}</td>-->
-<!--              <td>{{ product.fats }}</td>-->
-<!--              <td>{{ product.carbs }}</td>-->
-<!--              <td>-->
-<!--                &lt;!&ndash; выбор продукта для добавления &ndash;&gt;-->
-<!--                <div class="form-check">-->
-<!--                  <input-->
-<!--                      :id="product.id"-->
-<!--                      v-model="chosenProductId"-->
-<!--                      class="form-check-input"-->
-<!--                      type="radio"-->
-<!--                      name="addProduct"-->
-<!--                      :value="product.id"-->
-<!--                  >-->
-<!--                </div>-->
-<!--              </td>-->
-<!--            </tr>-->
-<!--            </tbody>-->
-<!--          </table>-->
-
-<!--          &lt;!&ndash; пагинация &ndash;&gt;-->
-<!--          <div class="d-flex justify-content-between">-->
-<!--            <nav>-->
-<!--              <ul class="pagination">-->
-
-<!--                &lt;!&ndash;переход на предыдущую страницу&ndash;&gt;-->
-<!--                <li class="page-item">-->
-<!--                  <button-->
-<!--                      class="page-link"-->
-<!--                      aria-label="Предыдущая"-->
-<!--                      :disabled="currentPage < 1"-->
-<!--                      @click="onClickPrevPage"-->
-<!--                  >-->
-<!--                    <span aria-hidden="true">&laquo;</span>-->
-<!--                  </button>-->
-<!--                </li>-->
-
-<!--                &lt;!&ndash; отображаем (n-2) (n-1) n (n+1) (n+2) страницы&ndash;&gt;-->
-<!--                &lt;!&ndash; если текущая страница 1, 2, (n-1) или (n-2) - она не в центре&ndash;&gt;-->
-
-<!--                <div-->
-<!--                    v-if="pageCount >= 5"-->
-<!--                    class="d-flex"-->
-<!--                >-->
-<!--                  <li-->
-<!--                      v-for="i in 5"-->
-<!--                      :key="i"-->
-<!--                      class="page-item"-->
-<!--                  >-->
-<!--                    <a-->
-<!--                        class="page-link"-->
-<!--                        :class="getPageNumberStyleClass( pagesForNavigation.start + i - 1)"-->
-<!--                        @click="currentPage = pagesForNavigation.start + i - 1"-->
-<!--                    >-->
-<!--                      {{ pagesForNavigation.start + i }}-->
-<!--                    </a>-->
-<!--                  </li>-->
-<!--                </div>-->
-
-<!--                <div-->
-<!--                    v-else-->
-<!--                    class="d-flex"-->
-<!--                >-->
-<!--                  <li-->
-<!--                      v-for="i in pageCount"-->
-<!--                      :key="i"-->
-<!--                      class="page-item"-->
-<!--                  >-->
-<!--                    <a-->
-<!--                        class="page-link"-->
-<!--                        :class="getPageNumberStyleClass( pagesForNavigation.start + i - 1)"-->
-<!--                        @click="currentPage = pagesForNavigation.start + i - 1"-->
-<!--                    >-->
-<!--                      {{ pagesForNavigation.start + i }}-->
-<!--                    </a>-->
-<!--                  </li>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash;переход на следующую страницу&ndash;&gt;-->
-<!--                <li class="page-item">-->
-<!--                  <button-->
-<!--                      class="page-link"-->
-<!--                      aria-label="Следующая"-->
-<!--                      :disabled="currentPage > pageCount - 2"-->
-<!--                      @click="onClickNextPage"-->
-<!--                  >-->
-<!--                    <span aria-hidden="true">&raquo;</span>-->
-<!--                  </button>-->
-<!--                </li>-->
-<!--              </ul>-->
-<!--            </nav>-->
-
-<!--            &lt;!&ndash; переход по номеру страницы &ndash;&gt;-->
-<!--            <div class="input-group page-input">-->
-<!--              <span class="input-group-text">-->
-<!--                Страница-->
-<!--              </span>-->
-<!--              <input-->
-<!--                  v-model="chosenPageInput"-->
-<!--                  type="text"-->
-<!--                  class="form-control form-control-sm"-->
-<!--                  inputmode="numeric"-->
-<!--              >-->
-<!--              <button-->
-<!--                  class="btn btn-light btn-sm"-->
-<!--                  :disabled="!isChosenPageValid"-->
-<!--                  @click="onClickGoToChosenPage"-->
-<!--              >-->
-<!--                ✓-->
-<!--              </button>-->
-<!--            </div>-->
-<!--          </div>-->
-
         </div>
         <div class="modal-footer">
           <button
@@ -235,9 +103,6 @@ export default {
     return {
       productStore: useProductsStore(),
       recordsStore: useRecordsStore(),
-      currentPage: 0,
-      sizeOfPage: 8,
-      chosenPageInput: 1,
       stringForSearch: null,
       chosenProductId: null,
       countOfProduct: {
@@ -292,6 +157,12 @@ export default {
         productId: this.chosenProductId,
         count: this.countOfProduct.value
       });
+      this.stringForSearch = null;
+      this.countOfProduct = {
+        isDirty: false,
+        isValid: false,
+        value: null
+      }
     },
     onInputCountOfProduct(e) {
       this.countOfProduct.value = e.target.value;

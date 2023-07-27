@@ -1,11 +1,15 @@
 <template>
   <div class="content">
-    <h4 class="heading-with-margin">Персональные настройки</h4>
+    <h4 class="heading-with-margin">
+      Персональные настройки
+    </h4>
     <div class="row">
       <div class="col">
         <!--   пол    -->
         <div class="mb-4">
-          <h6 class="heading-with-margin">Пол</h6>
+          <h6 class="heading-with-margin">
+            Пол
+          </h6>
           <div class="form-check">
             <input
                 v-model="input.gender.value"
@@ -185,8 +189,10 @@ export default {
         return 0;
       }
       return (this.input.gender.value === 'female') ?
-          Math.round((10 * this.input.weight.value + 6.25 * this.input.height.value - 5 * this.input.age.value - 161) * this.input.activity.value) :
-          Math.round((10 * this.input.weight.value + 6.25 * this.input.height.value - 5 * this.input.age.value + 5) * this.input.activity.value);
+          Math.round((10 * this.input.weight.value + 6.25 * this.input.height.value - 5 *
+              this.input.age.value - 161) * this.input.activity.value) :
+          Math.round((10 * this.input.weight.value + 6.25 * this.input.height.value - 5 *
+              this.input.age.value + 5) * this.input.activity.value);
     }
   },
   beforeMount() {

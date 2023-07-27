@@ -24,16 +24,20 @@
       />
     </div>
 
-    <h5 class="heading-with-margin">Калории</h5>
-    <div class="chart-container my-3">
+    <h5 class="heading-with-margin">
+      Калории
+    </h5>
+    <div class="chart-container medium-chart-container my-3">
       <Bar
           :data="caloriesBarData"
           :options="optionsCalories"
       />
     </div>
 
-    <h5 class="heading-with-margin">Макроэлементы</h5>
-    <div class="chart-container my-3">
+    <h5 class="heading-with-margin">
+      Макроэлементы
+    </h5>
+    <div class="chart-container medium-chart-container my-3">
       <Bar
           :data="macronutrientsBarData"
           :options="optionsMacronutrients"
@@ -244,8 +248,7 @@ export default {
 </script>
 
 <style scoped>
-
-.chart-container {
-  height: 20em;
+.medium-chart-container {
+  height: 25em;
 }
 </style>

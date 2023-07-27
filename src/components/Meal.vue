@@ -15,7 +15,7 @@
             :data-bs-target="'#' + mealType"
             :disabled="!chosenDate"
         >
-          <i class="bi bi-plus-circle small-icon"/>
+          <i class="bi bi-plus-circle"/>
         </button>
         <add-meal
             :meal-type="mealType"
