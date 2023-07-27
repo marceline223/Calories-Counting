@@ -7,7 +7,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title heading-with-margin align-content-center mt-1">
+          <h5 class="modal-title align-content-center mt-1">
             Добавить продукт
           </h5>
           <button
@@ -20,7 +20,9 @@
 
         <!-- название -->
         <div class="modal-body">
-          <h5 class="heading-with-margin"> {{ input.name.title }}</h5>
+          <h5 class="heading-with-margin">
+            {{ input.name.title }}
+          </h5>
           <div class="input-group mb-3">
             <input
                 v-model="input.name.value"
@@ -29,7 +31,9 @@
             >
           </div>
           <hr>
-          <h5 class="heading-with-margin">На 100 грамм продукта:</h5>
+          <h5 class="heading-with-margin">
+            На 100 грамм продукта:
+          </h5>
 
           <!-- калории -->
           <input-with-validation
