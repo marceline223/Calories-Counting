@@ -203,6 +203,9 @@ export default {
     this.input.height.value = this.recordsStore.settings.height;
   },
   methods: {
+    ...mapActions(useRecordsStore, {
+      setSettings: 'setSettings'
+    }),
     onClickSaveSettings() {
       //отправка в pinia
       this.recordsStore.setSettings({
@@ -219,10 +222,7 @@ export default {
     },
     onCheckForm(inputRef, e) {
       inputRef.isValid = e.isValid;
-    },
-    ...mapActions(useRecordsStore, {
-      setSettings: 'setSettings'
-    })
+    }
   }
 }
 </script>
