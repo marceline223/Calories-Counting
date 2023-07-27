@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <!-- поиск по списку -->
+            <!-- поиск по таблице -->
             <div class="input-group small-input-group align-content-end mb-4">
               <input
                   v-model="stringForSearch"
@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <!-- список -->
+          <!-- таблица -->
           <product-list-table
               :is-choosing-product-needed="true"
               :string-for-search="stringForSearch"
@@ -204,7 +204,8 @@
           <button
               type="button"
               class="btn btn-success"
-              :disabled="!countOfProduct.isValid"
+              :disabled="!countOfProduct.isValid || chosenProductId === null"
+              data-bs-dismiss="modal"
               @click="onClickAddToMeal"
           >
             Добавить
