@@ -7,7 +7,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title align-content-center mt-1">
+          <h5 class="modal-title align-content-center mt-1 heading-with-margin">
             Добавить запись: {{ mealName }} {{ formattedDate }}
           </h5>
           <button
@@ -21,7 +21,7 @@
           <div class="row justify-content-between">
             <div class="col mb-4">
               <div class="d-flex align-items-center">
-                <h6>Продукт: </h6>
+                <h6 class="heading-with-margin">Продукт: </h6>
                 <span class="mx-2">
                    {{ chosenProductName || "Выберите продукт" }}
                 </span>
@@ -29,7 +29,7 @@
 
               <div class="d-flex">
                 <!-- ввод количества -->
-                <div class="input-group amount">
+                <div class="input-group small-input-group">
                   <input
                       :value="countOfProduct.value"
                       type="text"
@@ -43,14 +43,14 @@
                 </div>
                 <i
                     v-if="countOfProduct.isDirty"
-                    class="bi mx-3 my-auto"
+                    class="bi mx-3 my-auto small-icon"
                     :class="iconClass"
                 />
               </div>
             </div>
 
             <!-- поиск по списку -->
-            <div class="input-group search align-content-end mb-4">
+            <div class="input-group small-input-group align-content-end mb-4">
               <input
                   v-model="stringForSearch"
                   type="text"
@@ -359,14 +359,6 @@ export default {
   color: black;
 }
 
-.search {
-  width: 25em;
-}
-
-.amount {
-  width: 25em;
-}
-
 .page-input {
   width: 15em;
   height: 1em;
@@ -374,10 +366,5 @@ export default {
 
 .btn-light {
   border-color: #e1e1e1;
-}
-
-i {
-  font-size: 1rem;
-  margin-left: 1rem;
 }
 </style>

@@ -6,6 +6,7 @@
           class="navbar-brand"
       >
         <img
+            class="logo"
             src="/logo.png"
             alt="ЗОЖ-Учёт"
         >
@@ -13,25 +14,25 @@
       <div>
         <router-link
             to="/main"
-            class="mx-3"
+            class="header-link mx-3"
         >
           Главная
         </router-link>
         <router-link
             to="/statistic"
-            class="mx-3"
+            class="header-link mx-3"
         >
           Статистика
         </router-link>
         <router-link
             to="/product-list"
-            class="mx-3"
+            class="header-link mx-3"
         >
           Справочник
         </router-link>
         <router-link
             to="/settings"
-            class="mx-3"
+            class="header-link mx-3"
         >
           Настройки
         </router-link>
@@ -50,14 +51,14 @@ export default {
 </script>
 
 <style scoped>
-a {
+.header-link {
   text-decoration: none;
   color: black;
   font-size: medium;
   font-weight: bold;
 }
 
-img {
+.logo {
   width: 2em;
 }
 </style>

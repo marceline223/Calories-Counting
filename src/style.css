@@ -14,12 +14,21 @@
   -webkit-text-size-adjust: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+.heading-with-margin {
   margin: 1em 0;
 }
 
 .content {
   max-width: 90%;
   margin: auto;
+}
+
+.small-icon {
+  font-size: 1em;
+  margin-left: 0.5em;
+}
+
+.small-input-group {
+  width: 20em;
 }
 

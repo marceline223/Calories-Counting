@@ -5,7 +5,7 @@
         id-alert="statisticPageAlert"
     />
 
-    <h4>
+    <h4 class="heading-with-margin">
       Статистика
     </h4>
 
@@ -24,7 +24,7 @@
       />
     </div>
 
-    <h5>Калории</h5>
+    <h5 class="heading-with-margin">Калории</h5>
     <div class="chart-container my-3">
       <Bar
           :data="caloriesBarData"
@@ -32,7 +32,7 @@
       />
     </div>
 
-    <h5>Макроэлементы</h5>
+    <h5 class="heading-with-margin">Макроэлементы</h5>
     <div class="chart-container my-3">
       <Bar
           :data="macronutrientsBarData"
@@ -244,9 +244,6 @@ export default {
 </script>
 
 <style scoped>
-.input-group {
-  width: 30em;
-}
 
 .chart-container {
   height: 20em;

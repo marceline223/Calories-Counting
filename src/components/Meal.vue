@@ -1,7 +1,7 @@
 <template>
   <div class="card col-8 mx-auto my-3">
     <div class="card-header d-flex align-items-center justify-content-between">
-      <h6 class="my-auto">
+      <h6 class="heading-with-margin my-auto">
         {{ mealName }}
       </h6>
       <div>
@@ -15,7 +15,7 @@
             :data-bs-target="'#' + mealType"
             :disabled="!chosenDate"
         >
-          <i class="bi bi-plus-circle"/>
+          <i class="bi bi-plus-circle small-icon"/>
         </button>
         <add-meal
             :meal-type="mealType"
@@ -57,10 +57,10 @@
         >
           <td>{{ meal.name }}</td>
           <td v-if="productIdForEditing === meal.id">
-            <div class="input-group input-group-sm">
+            <div class="input-group input-group-sm table-input">
               <input
                   v-model="newCount"
-                  class="form-control form-control-sm"
+                  class="form-control"
                   type="number"
               >
             </div>
@@ -271,11 +271,7 @@ export default {
 </script>
 
 <style scoped>
-i {
-  font-size: 1.1em;
-}
-
-.input-group-sm {
+.table-input {
   height: 1em;
 }
 </style>

@@ -9,11 +9,11 @@
             data-bs-toggle="modal"
             data-bs-target="#addProductModal"
         >
-          <i class="bi bi-plus-circle"/>
+          <i class="bi bi-plus-circle medium-icon"/>
         </button>
       </h4>
       <add-product/>
-      <div class="input-group align-content-center search">
+      <div class="input-group align-content-center small-input-group">
         <input
             v-model="stringForSearch"
             type="text"
@@ -222,8 +222,8 @@ export default {
 </script>
 
 <style scoped>
-i {
-  font-size: 1.4em;
+.medium-icon {
+  font-size: 1.5em;
 }
 
 .chosen-page {
@@ -235,17 +235,9 @@ i {
   color: black;
 }
 
-.search {
-  width: 25em;
-}
-
 .page-input {
   width: 15em;
   height: 1em;
-}
-
-.form-control {
-  width: 25em;
 }
 
 .btn-light {

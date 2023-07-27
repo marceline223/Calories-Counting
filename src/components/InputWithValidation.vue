@@ -1,14 +1,14 @@
 <template>
   <div class="my-4">
-    <h6>
+    <h6 class="heading-with-margin">
       {{ title }}
       <i
           v-if="isDirty"
-          class="bi"
+          class="small-icon bi"
           :class="iconClass"
       />
     </h6>
-    <div class="input-group mb-3">
+    <div class="input-group small-input-group mb-3">
       <input
           :value="newValue"
           type="text"
@@ -91,14 +91,3 @@ emits: ['inputForm', 'checkForm'],
   }
 }
 </script>
-
-<style scoped>
-
-.input-group {
-  width: 20em;
-}
-
-i {
-  font-size: 1em;
-}
-</style>

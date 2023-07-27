@@ -1,4 +1,4 @@
-export interface Record {
+export interface DayRecord {
     date: Date,
     totalCalories: number[],
     proteins: number[],

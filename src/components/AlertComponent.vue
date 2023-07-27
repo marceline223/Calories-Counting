@@ -21,12 +21,8 @@ export default {
   props: {
     idAlert: {
       type: String,
-      default: 'mainPageAlert'
+      default: null
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

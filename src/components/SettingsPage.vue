@@ -1,11 +1,11 @@
 <template>
   <div class="content">
-    <h4>Персональные настройки</h4>
+    <h4 class="heading-with-margin">Персональные настройки</h4>
     <div class="row">
       <div class="col">
         <!--   пол    -->
         <div class="mb-4">
-          <h6>Пол</h6>
+          <h6 class="heading-with-margin">Пол</h6>
           <div class="form-check">
             <input
                 v-model="input.gender.value"
@@ -76,10 +76,10 @@
 
         <!--   активность    -->
         <div class="my-4">
-          <h6>
+          <h6 class="heading-with-margin">
             {{ input.activity.title }}
           </h6>
-          <div class="input-group mb-3">
+          <div class="input-group small-input-group mb-3">
             <select
                 v-model="input.activity.value"
                 class="form-select"
@@ -108,7 +108,7 @@
       </div>
 
       <div class="col">
-        <h6>
+        <h6 class="heading-with-margin">
           Норма
         </h6>
         {{ normOfCalories }} кКал/день
@@ -220,13 +220,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.input-group {
-  width: 20em;
-}
-
-i {
-  font-size: 1em;
-}
-</style>
