@@ -159,7 +159,7 @@ export const useRecordsStore = defineStore('recordsStore', {
             }
         },
         addToMeal(payload) {
-            let record = this.records.find((record) => record.date === payload.date);
+            let record = this.records.find((record) => moment(record.date).isSame(payload.date, 'd'));
             if (!record) {
                 this.records.push({
                     date: payload.date,
