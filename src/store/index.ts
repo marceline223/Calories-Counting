@@ -4,7 +4,7 @@ import moment from "moment";
 
 export const useRecordsStore = defineStore('recordsStore', {
     state: () => ({
-        records: [] as DayRecord,
+        records: [] as DayRecord[],
         settings: {
             normOfCalories: 0,
             weight: null,

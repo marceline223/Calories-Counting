@@ -116,7 +116,7 @@
           Страница
         </span>
         <input
-            v-model="chosenPageInput"
+              v-model="chosenPageInput"
             type="text"
             class="form-control form-control-sm"
             inputmode="numeric"
