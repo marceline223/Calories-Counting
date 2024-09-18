@@ -4,6 +4,7 @@
         v-if="showSavedSettingsAlert"
         id-alert="savedSettings"
         text="Настройки успешно сохранены."
+        class-alert="alert-success"
     />
     <h4 class="heading-with-margin">
       Персональные настройки

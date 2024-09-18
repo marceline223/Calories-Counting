@@ -1,7 +1,8 @@
 <template>
   <div
       :id="idAlert"
-      class="alert alert-primary d-flex justify-content-between alert-dismissible"
+      class="alert d-flex justify-content-between alert-dismissible"
+      :class="classAlert"
       role="alert"
   >
     {{ text }}
@@ -27,6 +28,10 @@ export default {
     text: {
       type: String,
       default: "Вы можете рассчитать свою норму калорий на странице настроек."
+    },
+    classAlert: {
+      type: String,
+      default: "alert-primary",
     }
   },
   emits: ['close'],
