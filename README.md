@@ -7,6 +7,6 @@
 - вызвать
 `npm install`
 - вызвать
-`run dev`
+`npm run dev`
 или использовать скрипт в package.json 
 `dev`
