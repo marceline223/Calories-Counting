@@ -1,5 +1,10 @@
 <template>
   <div class="content">
+    <alert-component
+        v-if="showSavedSettingsAlert"
+        id-alert="savedSettings"
+        text="Настройки успешно сохранены."
+    />
     <h4 class="heading-with-margin">
       Персональные настройки
     </h4>
@@ -133,13 +138,15 @@
 import {useRecordsStore} from "../store/index.ts";
 import {mapActions} from "pinia";
 import InputWithValidation from "../components/InputWithValidation.vue";
+import AlertComponent from "../components/AlertComponent.vue";
 
 export default {
   name: "SettingsPage",
-  components: {InputWithValidation},
+  components: {AlertComponent, InputWithValidation},
   data() {
     return {
       recordsStore: useRecordsStore(),
+      showSavedSettingsAlert: false,
       input: {
         gender: {
           title: 'Пол',
@@ -216,6 +223,7 @@ export default {
         gender: this.input.gender.value,
         activity: this.input.activity.value
       });
+      this.showSavedSettingsAlert = true;
     },
     onInputForm(inputRef, e) {
       inputRef.value = e.inputValue;
