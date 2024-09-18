@@ -1,4 +1,5 @@
 # Приложение подсчета калорий CaloriesCounting.
+Vue 3, Bootstrap, Pinia, ChartJS, Vue Router
 ## Функционал:
 1. Заполнение дневника калорий по дням:
 ![image](https://github.com/user-attachments/assets/6ddf423f-d49f-49bd-96b0-c412c3aefccc)
