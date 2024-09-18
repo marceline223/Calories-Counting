@@ -45,9 +45,9 @@
 import {useRecordsStore, useProductsStore} from "../store/index.ts";
 import {mapActions, mapState} from "pinia";
 
-import MealComponent from "./Meal.vue";
-import AlertComponent from "./AlertComponent.vue";
-import InputCalendar from "./InputCalendar.vue";
+import MealComponent from "../components/Meal.vue";
+import AlertComponent from "../components/AlertComponent.vue";
+import InputCalendar from "../components/InputCalendar.vue";
 
 export default {
   name: "MainPage",

@@ -54,8 +54,8 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import {useRecordsStore} from "../store/index.ts";
 import {mapActions, mapState} from "pinia";
 import moment from "moment";
-import AlertComponent from "./AlertComponent.vue";
-import InputCalendar from "./InputCalendar.vue";
+import AlertComponent from "../components/AlertComponent.vue";
+import InputCalendar from "../components/InputCalendar.vue";
 
 Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, annotationPlugin);
 

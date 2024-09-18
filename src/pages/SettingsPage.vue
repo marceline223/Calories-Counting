@@ -132,7 +132,7 @@
 <script>
 import {useRecordsStore} from "../store/index.ts";
 import {mapActions} from "pinia";
-import InputWithValidation from "./InputWithValidation.vue";
+import InputWithValidation from "../components/InputWithValidation.vue";
 
 export default {
   name: "SettingsPage",

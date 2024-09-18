@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import AddProduct from "./AddProduct.vue";
-import ProductListTable from "./ProductListTable.vue";
+import AddProduct from "../components/AddProduct.vue";
+import ProductListTable from "../components/ProductListTable.vue";
 
 export default {
   name: "ProductListPage",
