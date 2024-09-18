@@ -70,7 +70,7 @@
               <a
                   class="page-link black-page-link"
                   :class="getPageNumberStyleClass(pagesForNavigation.start + i - 1)"
-                  @click="currentPage = pagesForNavigation.start + i - 1"
+                  @click="onClickGoToPageInPagination(pagesForNavigation.start + i - 1)"
               >
                 {{ pagesForNavigation.start + i }}
               </a>
@@ -89,7 +89,7 @@
               <a
                   class="page-link black-page-link"
                   :class="getPageNumberStyleClass(pagesForNavigation.start + i - 1)"
-                  @click="currentPage = pagesForNavigation.start + i - 1"
+                  @click="onClickGoToPageInPagination(pagesForNavigation.start + i - 1)"
               >
                 {{ pagesForNavigation.start + i }}
               </a>
@@ -116,7 +116,7 @@
           Страница
         </span>
         <input
-              v-model="chosenPageInput"
+            v-model="chosenPageInput"
             type="text"
             class="form-control form-control-sm"
             inputmode="numeric"
@@ -149,7 +149,7 @@ export default {
       default: null
     }
   },
-emits: ['changeChosenProductId'],
+  emits: ['changeChosenProductId'],
   data() {
     return {
       chosenProductId: null,
@@ -203,6 +203,12 @@ emits: ['changeChosenProductId'],
       }
     }
   },
+  watch: {
+    stringForSearch() {
+      this.currentPage = 0;
+      this.chosenPageInput = 1;
+    }
+  },
   methods: {
     getPageNumberStyleClass(pageNumber) {
       if (pageNumber === this.currentPage) {
@@ -220,13 +226,16 @@ emits: ['changeChosenProductId'],
       }
     },
     onClickGoToChosenPage() {
-      if (this.chosenPageInput > 0 && this.chosenPageInput <= this.pageCount) {
-        this.currentPage = this.chosenPageInput - 1;
-      } else if (this.chosenPageInput <= 0) {
-        this.currentPage = 0;
-      } else {
-        this.currentPage = this.pageCount - 1;
+      if (this.chosenPageInput <= 0) {
+        this.chosenPageInput = 1;
+      } else if (this.chosenPageInput >= this.pageCount) {
+        this.chosenPageInput = this.pageCount;
       }
+      this.currentPage = this.chosenPageInput - 1;
+    },
+    onClickGoToPageInPagination(page) {
+      this.currentPage = page;
+      this.chosenPageInput = page + 1;
     },
     onChangeChosenProductId() {
       this.$emit('changeChosenProductId', {
